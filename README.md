@@ -56,7 +56,7 @@ Ordinary builds have `noindex, follow`, a disallowing `robots.txt`, and an empty
 
 Pages contain full prerendered HTML and per-route titles, descriptions, canonical URLs, Open Graph/Twitter metadata, and self-hosted sharing artwork. The homepage includes Organization, Person, WebSite, and service-catalog structured data. Authored content dates are maintained deliberately rather than changed on every build. No fabricated address, reviews, ratings, availability, or pricing is used.
 
-`npm run asset:social` regenerates the 1200×630 sharing card and 180px Apple touch icon from the supplied TVR monogram. The site self-hosts Geist Variable; its dependency includes the OFL license. The diagram/atmosphere are small SVG assets, not a screenshot of the concept or a canvas/WebGL renderer.
+`npm run asset:social` regenerates the 1200×630 sharing card and 180px Apple touch icon from the supplied TVR monogram. The site self-hosts Geist Variable and distributes its OFL notice in `public/licenses/`. Vite emits bundled-dependency notices into `dist/client/licenses/dependencies.md`; the generated shadcn source’s MIT notice is also included. Third-party code and fonts retain their own licenses. The diagram/atmosphere are small SVG assets, not a screenshot of the concept or a canvas/WebGL renderer.
 
 ## Hosting/privacy boundary
 

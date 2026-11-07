@@ -30,3 +30,4 @@
 
 - Explore a little more of the approved concept’s glowing, ethereal background lighting, after core correctness and responsive/accessibility checks. Prefer tuning the existing tiny SVG atmosphere. No animation, WebGL, heavy artwork, or complicated rendering machinery. Keep only if it improves the composition without hurting readability or performance.
 - Future repository context: the user may later consider a multi-site monorepo. Keep theme/content/graphics owned by this site and align tooling conventions with Figure/Key. Do not migrate repositories or introduce speculative shared packages here.
+- Exploration outcome: kept a restrained three-ellipse glow in `public/assets/atmosphere.svg` (810 bytes). It uses no filters, animation, script, or rendering dependency. The main layout and all content stay unchanged. Further art direction remains optional user feedback, not unfinished core work.

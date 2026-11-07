@@ -1,4 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2100" viewBox="0 0 1600 2100">
-  <defs><radialGradient id="light"><stop stop-color="#10232e" stop-opacity=".48"/><stop offset="1" stop-color="#080f16" stop-opacity="0"/></radialGradient></defs>
-  <ellipse cx="800" cy="780" rx="800" ry="900" fill="url(#light)"/>
+  <defs>
+    <radialGradient id="light"><stop stop-color="#17485b" stop-opacity=".42"/><stop offset=".55" stop-color="#102d3b" stop-opacity=".22"/><stop offset="1" stop-color="#080f16" stop-opacity="0"/></radialGradient>
+    <radialGradient id="mist"><stop stop-color="#245267" stop-opacity=".18"/><stop offset=".65" stop-color="#153747" stop-opacity=".08"/><stop offset="1" stop-color="#080f16" stop-opacity="0"/></radialGradient>
+  </defs>
+  <ellipse cx="830" cy="730" rx="730" ry="760" fill="url(#light)"/>
+  <ellipse cx="1120" cy="690" rx="410" ry="650" fill="url(#mist)" transform="rotate(28 1120 690)"/>
+  <ellipse cx="490" cy="1060" rx="350" ry="570" fill="url(#mist)" transform="rotate(-32 490 1060)"/>
 </svg>

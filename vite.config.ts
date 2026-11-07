@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
       react(),
     ],
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+    build: { license: { fileName: 'licenses/dependencies.md' } },
     server: { host: '127.0.0.1' },
   };
 });
