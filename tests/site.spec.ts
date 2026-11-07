@@ -48,7 +48,9 @@ test('contact actions retain link semantics and keyboard users can skip the head
     const background = await link.evaluate(el => getComputedStyle(el).backgroundColor);
     expect(color).not.toBe(background);
   }
-  await expect(page.getByRole('link', { name: 'LinkedIn', exact: true })).toHaveAttribute('href', 'https://www.linkedin.com/in/tvanreenen/');
+  await expect(page.getByRole('link', { name: 'LinkedIn', exact: true })).toHaveCount(1);
+  await expect(page.locator('header').getByRole('link', { name: 'LinkedIn', exact: true })).toHaveAttribute('href', 'https://www.linkedin.com/in/tvanreenen/');
+  await expect(page.locator('.perspective-copy').getByRole('link')).toHaveCount(0);
 });
 
 test('service content reflows without horizontal overflow from 320px through large desktops', async ({ page }) => {

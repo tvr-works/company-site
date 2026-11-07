@@ -46,7 +46,7 @@ export const organizationData = {
       '@type': 'Organization', '@id': `${site.origin}/#organization`, name: site.name, legalName: site.legalName,
       url: `${site.origin}/`, logo: `${site.origin}/logo.svg`, email: site.email,
       founder: { '@id': `${site.origin}/#tim` },
-      description: 'Independent software engineering, application modernization, applied AI, and fractional technical leadership.',
+      description: 'Independent software engineering for founders and established businesses: custom applications, modernization, applied AI, and fractional technical leadership.',
       hasOfferCatalog: {
         '@type': 'OfferCatalog', name: 'Engineering and advisory services',
         itemListElement: ['Custom applications and solutions', 'Software modernization', 'Applied AI and automation', 'Fractional technical leadership and architecture advice'].map(name => ({

@@ -12,7 +12,7 @@ export function Partnership() {
     <ul className="service-list">
       {services.map(service => <li key={service.id} className={`service service-${service.id}`}>
         <h3>{service.title}</h3>
-        <p>{service.description}</p>
+        <p className="text-diagram-caption">{service.description}</p>
       </li>)}
     </ul>
   </section>;

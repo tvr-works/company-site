@@ -20,7 +20,7 @@ const buttonVariants = cva(
       },
       size: {
         contact: "min-h-14 min-w-[min(12.5rem,100%)] max-w-full gap-2 px-[min(2.5rem,8vw)] text-xl font-semibold sm:px-[min(3rem,8vw)] sm:text-[1.375rem]",
-        "contact-compact": "min-h-11 gap-2 px-5 text-base font-semibold sm:min-h-12 sm:px-7 sm:text-lg",
+        "contact-compact": "min-h-11 gap-2 px-3 text-sm font-semibold sm:min-h-12 sm:px-7 sm:text-lg",
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",

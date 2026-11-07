@@ -15,16 +15,12 @@ export function SiteHeader() {
         <img src="/logo.svg" alt="TVR" width="84" height="44" />
         <span>Works</span>
       </Link>
-      <ContactLink compact />
+      <nav className="header-actions" aria-label="Contact">
+        <a className="header-link" href={site.linkedin}>LinkedIn <ArrowUpRight aria-hidden="true" /></a>
+        <ContactLink compact />
+      </nav>
     </header>
   </>;
-}
-
-export function ContactLinks() {
-  return <div className="contact-links" aria-label="Contact Tim">
-    <a href={contactHref}>Email <ArrowUpRight aria-hidden="true" /></a>
-    <a href={site.linkedin}>LinkedIn <ArrowUpRight aria-hidden="true" /></a>
-  </div>;
 }
 
 export function SiteFooter() {

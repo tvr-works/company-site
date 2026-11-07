@@ -49,6 +49,16 @@ The flow under test was homepage → contact links and Privacy → return/histor
 - Review evidence: `docs/design/qa/review-comparison.png` places the approved 1023px source beside the updated 1023 × 1620px render. The smaller supporting type, increased diagram gap, and updated narrative are explicit user-requested amendments. No new P0/P1/P2 issues were found. `review-desktop.png`, `review-mobile.png` (390px), and `review-preview.png` record the current result. Temporary selection/focus states were cleared for the desktop capture.
 - Re-ran `npm run check` and `npm run test:browser`: lint, TypeScript, all 4 configuration tests, the production build, and all 18 Chromium/WebKit checks passed. Final browser inspection confirmed 26px desktop lead/narrative, 44px diagram margin, the new email destination, and no app warnings/errors. Viewport overrides were reset and the local preview remains available.
 
+## Header, diagram, and audience refinement
+
+- Moved the single LinkedIn link into a named contact navigation area beside the header email CTA. Removed the separate closing contact-link component and its unused CSS. Browser checks confirm LinkedIn appears once in the header and the narrative contains no links.
+- Framed the narrative with matching subtle upper/footer rules and balanced section padding. Browser inspection confirmed identical computed rule colors above and below.
+- Added the two missing white endpoint dots at the left SVG path origins, using the same radius and fill as the right endpoints.
+- Added the `diagram-caption` semantic theme token (`#9eb6ca`) and used Tailwind’s `text-diagram-caption` utility on the service subtitles. Headings remain white. All automated contrast checks passed.
+- Per the user’s clarification, the original hero lead remains in place. The founder/business-owner invitation now closes the narrative. Search descriptions and the organization description also acknowledge founders and established businesses without claiming industry exclusivity, pricing, or affordability.
+- Current inspected captures: `docs/design/qa/audience-desktop.png` at 1023 × 1646px, `audience-mobile.png` at 390px, `audience-mobile-320.png` at 320px, and `audience-preview.png` after resetting the viewport. `audience-comparison.png` pairs the current desktop with the original concept at the same width. The added header link, framed closing section, caption hue, endpoint dots, and closing sentence are requested amendments to that concept. At 320px the header wraps to preserve readable links and touch targets.
+- The final `npm run check` and `npm run test:browser` runs passed: lint/shadcn lint, TypeScript, 4 unit checks, production build, and 18 Chromium/WebKit cases. No app warnings/errors appeared in the in-app browser. No new P0/P1/P2 visual issues remain. The local preview stays running; nothing was pushed or deployed.
+
 ## Open decisions and limits
 
 - Public hostname remains configurable between `tvr.works` and `llc.tvr.works`. The confirmed contact address is `tim@tvr.works`.

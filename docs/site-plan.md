@@ -8,7 +8,9 @@
 - Four services around “One direct partnership”: create something new, modernize what exists, put AI to work, and get technical direction.
 - Keep client and employer names out of the public site.
 - Keep direct contact personal. No invented availability, results, credentials, testimonials, pricing, or office address.
-- Footer: copyright/company identity and Privacy. Email and LinkedIn belong in the closing section.
+- Header: brand, LinkedIn, and email CTA. Keep the closing narrative free of contact links. Footer: copyright/company identity and Privacy, separated by the same subtle rule that frames the narrative above.
+- End the narrative with an explicit invitation to founders with new ideas and business owners with systems to improve. Keep the original hero lead focused on the work. Welcome established businesses without an industry restriction or unsupported price/affordability claim.
+- Diagram subtitles use a readable muted blue semantic theme token, distinct from the white service headings.
 
 ## Implementation
 

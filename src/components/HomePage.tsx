@@ -1,4 +1,4 @@
-import { ContactLink, ContactLinks, SiteFooter, SiteHeader } from './SiteChrome';
+import { ContactLink, SiteFooter, SiteHeader } from './SiteChrome';
 import { Partnership } from './Partnership';
 
 export function HomePage() {
@@ -16,8 +16,7 @@ export function HomePage() {
         <div className="perspective-copy">
           <p>I’m Tim VanReenen. My background spans software engineering, product design, product management, and technical leadership.</p>
           <p>I work directly with clients and alongside consulting teams, building applications and cloud infrastructure on platforms that fit your project. My experience includes Azure and Google Cloud.</p>
-          <p>Whether you’re exploring an idea or ready to build, I can help bring it to life.</p>
-          <ContactLinks />
+          <p>Whether you’re a founder with a new idea or a business owner with systems to improve, I can help you build software that fits the way you work.</p>
         </div>
       </section>
     </main>

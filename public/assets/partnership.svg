@@ -14,5 +14,5 @@
     <path d="M376 199C450 199 446 252 512 252M788 252C852 252 850 199 948 199M296 441H365C450 441 448 388 512 388M788 388C848 388 854 441 948 441"/>
   </g>
   <g fill="#4be1f0"><circle cx="512" cy="252" r="7"/><circle cx="788" cy="252" r="7"/><circle cx="512" cy="388" r="7"/><circle cx="788" cy="388" r="7"/></g>
-  <g fill="#edf2f5"><circle cx="948" cy="199" r="4.5"/><circle cx="948" cy="441" r="4.5"/></g>
+  <g fill="#edf2f5"><circle cx="376" cy="199" r="4.5"/><circle cx="296" cy="441" r="4.5"/><circle cx="948" cy="199" r="4.5"/><circle cx="948" cy="441" r="4.5"/></g>
 </svg>
