@@ -12,7 +12,7 @@ test('home, privacy, and missing pages have readable static content without Java
     const response = await page.goto(`http://127.0.0.1:4174${path}`);
     expect(response?.status()).toBe(status);
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Let’s talk — email Tim about your project' }).first()).toHaveAttribute('href', /^mailto:tim@vanreenen\.me/);
+    await expect(page.getByRole('link', { name: 'Let’s talk — email Tim about your project' }).first()).toHaveAttribute('href', /^mailto:tim@tvr\.works/);
   }
   await context.close();
 });

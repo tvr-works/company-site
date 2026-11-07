@@ -24,7 +24,7 @@
 - Check keyboard/focus behavior, headings/landmarks, contrast, reduced motion, reflow, no-JavaScript content, clean URLs/404s, metadata, and local production behavior.
 - Compare the rendered desktop page against the approved concept and inspect mobile/tablet layouts.
 - Use incremental local commits. Do not push, deploy, or change Cloudflare settings.
-- Final public domain/contact email are being confirmed. Cloudflare dashboard-injected monitoring must be checked before publication; the source configuration alone cannot establish live practices.
+- Public hostname remains under consideration; contact email is confirmed as `tim@tvr.works`. Cloudflare dashboard-injected monitoring must be checked before publication; the source configuration alone cannot establish live practices.
 
 ## Secondary visual exploration
 

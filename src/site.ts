@@ -4,7 +4,7 @@ export const site = {
   name: 'TVR Works',
   legalName: 'TVR Works LLC',
   origin: resolveSiteOrigin(import.meta.env.VITE_SITE_ORIGIN),
-  email: 'tim@vanreenen.me',
+  email: 'tim@tvr.works',
   linkedin: 'https://www.linkedin.com/in/tvanreenen/',
   indexing: resolveSiteIndexing(import.meta.env.VITE_SITE_INDEXING),
   updated: '2026-11-07',

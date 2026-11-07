@@ -50,7 +50,7 @@ The diagram’s labels are real HTML in one consistent reading order. Its SVG co
 
 ## Search and public identity
 
-`VITE_SITE_ORIGIN` defaults provisionally to `https://tvr.works`; `https://llc.tvr.works` is also supported. The public contact currently uses the existing `tim@vanreenen.me` address. Both are centralized for final review.
+`VITE_SITE_ORIGIN` defaults provisionally to `https://tvr.works`; `https://llc.tvr.works` is also supported. The confirmed public contact is `tim@tvr.works`. Both values are centralized in the site configuration.
 
 Ordinary builds have `noindex, follow`, a disallowing `robots.txt`, and an empty sitemap. `VITE_SITE_INDEXING=public` explicitly enables indexing and the two-page sitemap; a non-main Cloudflare branch rejects that setting. Production mode alone does not enable search indexing. No public build has been published.
 

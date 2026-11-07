@@ -2,7 +2,7 @@
 
 final result: passed
 
-## Visual truth and evidence
+## Initial build visual truth and evidence
 
 - Approved source: `docs/design/approved-concept.png`, 1023 × 1538 pixels.
 - Local implementation: `http://127.0.0.1:4173/`, static production preview.
@@ -40,9 +40,18 @@ The flow under test was homepage → contact links and Privacy → return/histor
 - The local production preview applies generated static security headers, including hashes for inline framework/JSON-LD scripts. No external analytics or embeds are added by the source.
 - A packaging-only follow-up build also passed after enabling bundled-dependency notices and including the font/shadcn licenses; it made no layout or content changes.
 
+## User review refinement
+
+- Updated the public email centrally to `tim@tvr.works`, including contact links, Privacy, and structured data. Updated the browser assertion to the confirmed address.
+- Increased the desktop CTA-to-diagram margin from 12px to 44px. Mobile retains its already generous spacing.
+- The base body font remains 16px. Reduced the desktop homepage lead and narrative maximum from 30px to 26px, with slightly more line height; mobile body remains 18px. Service captions now cap at 22px.
+- Consolidated the closing narrative into three complete first-person paragraphs. Removed the detached platform fragment, the separate muted engagement label, and its unused CSS rule.
+- Review evidence: `docs/design/qa/review-comparison.png` places the approved 1023px source beside the updated 1023 × 1620px render. The smaller supporting type, increased diagram gap, and updated narrative are explicit user-requested amendments. No new P0/P1/P2 issues were found. `review-desktop.png`, `review-mobile.png` (390px), and `review-preview.png` record the current result. Temporary selection/focus states were cleared for the desktop capture.
+- Re-ran `npm run check` and `npm run test:browser`: lint, TypeScript, all 4 configuration tests, the production build, and all 18 Chromium/WebKit checks passed. Final browser inspection confirmed 26px desktop lead/narrative, 44px diagram margin, the new email destination, and no app warnings/errors. Viewport overrides were reset and the local preview remains available.
+
 ## Open decisions and limits
 
-- Public hostname remains configurable between `tvr.works` and `llc.tvr.works`. Existing `tim@vanreenen.me` is the current contact address.
+- Public hostname remains configurable between `tvr.works` and `llc.tvr.works`. The confirmed contact address is `tim@tvr.works`.
 - No physical-device or manual screen-reader audit was performed. Automated scans and engine tests are evidence for the tested states, not a blanket accessibility-conformance claim. Firefox and real network/field performance were not measured.
 - No push, deployment, DNS, Cloudflare monitoring change, or public indexing change occurred. Cloudflare-injected monitoring/CSP/privacy must be reconciled against actual settings before future publication.
 - Further atmospheric art direction is optional; no unresolved P0/P1/P2 design findings remain.
