@@ -9,8 +9,14 @@ const publicBuild = resolveSiteIndexing(environment.VITE_SITE_INDEXING, process.
 const directory = new URL('../dist/client/', import.meta.url);
 const hashes = new Set<string>();
 for (const file of ['index.html', 'privacy.html', '404.html']) {
-  const html = await readFile(new URL(file, directory), 'utf8');
+  // Preserve native contact links when Cloudflare processes the prerendered HTML.
+  // Keep the exemption in the delivery artifact so React owns its normal markup.
+  const html = (await readFile(new URL(file, directory), 'utf8')).replace(
+    /(?:<!--email_off-->)?(<a\b[^>]*\bhref="mailto:[^"]*"[^>]*>[\s\S]*?<\/a>)(?:<!--\/email_off-->)?/g,
+    '<!--email_off-->$1<!--/email_off-->',
+  );
   if (!html.includes('<h1') || !html.includes('TVR Works')) throw new Error(`Missing prerendered content in ${file}`);
+  await writeFile(new URL(file, directory), html);
   for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
     if (!/\bsrc=/.test(match[1]) && match[2]) hashes.add(`'sha256-${createHash('sha256').update(match[2]).digest('base64')}'`);
   }

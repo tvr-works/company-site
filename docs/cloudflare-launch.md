@@ -1,6 +1,6 @@
 # Cloudflare launch preparation
 
-Inspected November 7, 2026. The new site remains local; publishing and DNS changes have not been authorized.
+Inspected November 7, 2026. The user has authorized the build and deployment at `tvr.works`; release verification is in progress.
 
 ## Repository ownership
 
@@ -47,6 +47,12 @@ Existing product CNAMEs, MX records, and TXT records do not need changes for thi
 
 ## Edge features to verify
 
-Zone-wide email obfuscation is enabled, Rocket Loader is disabled, and HTTPS redirection is enabled. Before deployment, add the established Figure-style `email_off` exemptions around contact links or configure a hostname-scoped exception; verify React hydration and contact behavior on the deployed artifact. [Cloudflare documents both exemption mechanisms](https://developers.cloudflare.com/waf/tools/scrape-shield/email-address-obfuscation/).
+Zone-wide email obfuscation is enabled, Rocket Loader is disabled, and HTTPS redirection is enabled. The static finalizer now adds Cloudflare's documented `email_off` exemptions around native mailto anchors in the delivered HTML. This keeps the React components unchanged and preserves readable, usable contact links without JavaScript. All 18 Chromium/WebKit browser checks passed with this artifact change, including navigation/hydration, contact semantics, responsive layouts, and axe scans. Hosted edge behavior still needs release verification. [Cloudflare documents the exemption](https://developers.cloudflare.com/waf/tools/scrape-shield/email-address-obfuscation/).
 
 Pages Web Analytics is not configured on this project. Enabling it later requires matching CSP permissions and privacy disclosures for the actual injected beacon and endpoints. No analytics configuration was changed during this investigation.
+
+## Release preparation
+
+The existing Pages project now has `npm run build` and `dist/client` saved. Both environments use `https://tvr.works` as the canonical origin; preview indexing is `preview` and production indexing is `public`. The project retains build image v3 and the repository's Node pin. No new deployment had run when these settings were saved.
+
+Local release checks passed lint (including shadcn), TypeScript, four configuration tests, and all 18 Chromium/WebKit browser cases. The Browser plugin is not available in this session, so the existing Playwright workflow was used. Its prerender/preview servers required execution outside the filesystem sandbox to bind localhost; the sandboxed attempt failed before running browser tests. A hosted preview will verify the Git clone/build and actual Pages delivery before production cutover.
