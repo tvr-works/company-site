@@ -1,0 +1,27 @@
+import { ContactLink, ContactLinks, SiteFooter, SiteHeader } from './SiteChrome';
+import { Partnership } from './Partnership';
+
+export function HomePage() {
+  return <div className="site-shell">
+    <SiteHeader />
+    <main id="main" tabIndex={-1}>
+      <section className="hero page-width" aria-labelledby="hero-heading">
+        <h1 id="hero-heading">Your vision.<br /><span>A partner to build it.</span></h1>
+        <p>Turn a new idea into working software. Reimagine an existing system. Work directly with an engineer who brings product perspective and technical depth.</p>
+        <ContactLink />
+      </section>
+      <Partnership />
+      <section className="perspective page-width" aria-labelledby="perspective-heading">
+        <h2 id="perspective-heading">Product<br /> perspective.<br /> Engineering<br /> depth.</h2>
+        <div className="perspective-copy">
+          <p>I’m Tim VanReenen. My background spans software engineering, product design, product management, and technical leadership.</p>
+          <p>Applications and cloud infrastructure, built on the platforms that fit your business—including Azure and Google Cloud.</p>
+          <p className="engagements">Direct engagements and consulting partnerships.</p>
+          <p>Whether you’re exploring an idea or ready to build, I can help bring it to life.</p>
+          <ContactLinks />
+        </div>
+      </section>
+    </main>
+    <SiteFooter />
+  </div>;
+}
