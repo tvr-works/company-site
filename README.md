@@ -50,9 +50,9 @@ The diagram’s labels are real HTML in one consistent reading order. Its SVG co
 
 ## Search and public identity
 
-`VITE_SITE_ORIGIN` defaults provisionally to `https://tvr.works`; `https://llc.tvr.works` is also supported. The confirmed public contact is `tim@tvr.works`. Both values are centralized in the site configuration.
+The public origin is `https://tvr.works`, and the contact is `tim@tvr.works`. Both values are centralized in the site configuration. The former `llc.tvr.works` hostname redirects to the public origin.
 
-Ordinary builds have `noindex, follow`, a disallowing `robots.txt`, and an empty sitemap. `VITE_SITE_INDEXING=public` explicitly enables indexing and the two-page sitemap; a non-main Cloudflare branch rejects that setting. Production mode alone does not enable search indexing. No public build has been published.
+Ordinary local builds have `noindex, follow`, a disallowing `robots.txt`, and an empty sitemap. Cloudflare's production environment explicitly sets `VITE_SITE_INDEXING=public`, enabling indexing and the two-page sitemap; preview builds retain `preview`. A non-main Cloudflare branch rejects public indexing. Production mode alone does not enable search indexing.
 
 Pages contain full prerendered HTML and per-route titles, descriptions, canonical URLs, Open Graph/Twitter metadata, and self-hosted sharing artwork. The homepage includes Organization, Person, WebSite, and service-catalog structured data. Authored content dates are maintained deliberately rather than changed on every build. No fabricated address, reviews, ratings, availability, or pricing is used.
 
@@ -64,6 +64,6 @@ The build prerenders `/`, `/privacy`, and `/404` into `dist/client`. That is the
 
 No advertising, visitor-analytics script, third-party embed, contact form, or tracking cookie is added by this source. TanStack Router uses session storage for functional scroll restoration. The preview applies a restrictive CSP with hashes for the generated inline scripts, plus referrer, content-type, and permissions headers.
 
-Before any future publication, confirm the final hostname/email and actual Cloudflare monitoring configuration. Cloudflare can inject Web Analytics outside the source code; if enabled, update the privacy disclosure and CSP to match the actual beacon/endpoints. The current CSP intentionally permits only same-origin script/network resources. Do not claim that absence of a script in source proves absence of dashboard-injected services.
+The static finalizer adds Cloudflare's documented email-obfuscation exemptions around native mailto anchors. Hosted verification confirmed the links remain intact and React navigation works. Pages Web Analytics is not configured, the zone's Zaraz configuration has no tools, and no injected visitor-analytics script was observed at launch. If monitoring configuration changes, update the privacy disclosure and CSP for the actual beacon/endpoints. The current CSP permits only same-origin script/network resources.
 
-The site implementation remains local. Repository ownership has moved to [tvr-works/company-site](https://github.com/tvr-works/company-site), and the existing Pages project's Git connection now points to that organization repository. See the [Cloudflare launch preparation](docs/cloudflare-launch.md) for verification and remaining setup. No Git push, new Pages project, DNS change, analytics setting, deployment, or indexing change has been performed.
+The site is live at [tvr.works](https://tvr.works) on the existing `company-site` Pages project, connected to [tvr-works/company-site](https://github.com/tvr-works/company-site). Pushes to `main` deploy production; other branches receive non-indexable previews. See the [Cloudflare launch record](docs/cloudflare-launch.md) for deployment IDs, verified settings, domain routing, and rollback notes.

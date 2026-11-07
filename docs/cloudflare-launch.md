@@ -1,24 +1,24 @@
-# Cloudflare launch preparation
+# Cloudflare launch record
 
-Inspected November 7, 2026. The user has authorized the build and deployment at `tvr.works`; release verification is in progress.
+Published and verified November 7, 2026 at [tvr.works](https://tvr.works). Release commit: `0a7b039da05741a6e072117d73a4b1ba53ef72b9`.
 
 ## Repository ownership
 
-`company-site` was transferred from `tvanreenen` to [tvr-works/company-site](https://github.com/tvr-works/company-site). GitHub confirmed the same repository ID (`1079037433`), public visibility, and administrator access after the move. The local `origin` now uses `https://github.com/tvr-works/company-site.git`. No commits were pushed; GitHub's `main` remained at `5e72f33f5c6e67174138bb8cd284b9e2f5dfe436` when inspected before the transfer.
+`company-site` was transferred from `tvanreenen` to [tvr-works/company-site](https://github.com/tvr-works/company-site). GitHub confirmed the same repository ID (`1079037433`), public visibility, and administrator access after the move. The local `origin` uses `https://github.com/tvr-works/company-site.git`. The tested release was pushed to `codex/launch-tvr-works` for preview, then to `main` for production.
 
 The organization's existing Cloudflare Workers and Pages GitHub App uses selected-repository access. After the user completed GitHub identity verification, a fresh browser navigation confirmed saved access to exactly `company-site`, `key-site`, and `figure-site`, with Save disabled. No app permission changes were needed in this verification step. The CLI token could transfer the repository but could not administer that app installation.
 
 ## Existing hosting
 
-The personal Cloudflare account, **Tim VanReenen**, owns the active `tvr.works` zone and the existing `company-site` Pages project. That project serves `company-site-8f1.pages.dev` and `llc.tvr.works`. Its last deployment is `45f241ce-80b9-42ef-ba03-661b6ad2d892`, from October 19, 2025. Production builds from `main` and preview builds are enabled, but the build command and output directory are still blank.
+The personal Cloudflare account, **Tim VanReenen**, owns the active `tvr.works` zone and the existing `company-site` Pages project. Production deployment `a106f7ec-7274-4048-9c1f-72f41b11f3ab` serves the new site, with `tvr.works` and `llc.tvr.works` both showing active domain validation and SSL. The earlier deployment, `45f241ce-80b9-42ef-ba03-661b6ad2d892`, remains in the project's history.
 
 With explicit approval, the existing Pages project's Git source was disconnected and reconnected to `tvr-works/company-site`. Automatic production and preview builds were paused before disconnecting, remained paused while reconnecting, and were then restored to their previous settings: production deployments from `main`, all preview branches, and PR comments enabled. The project was reused; no replacement project was needed.
 
-A fresh API readback matched the pre-change snapshot except for the repository owner and owner ID. Project ID `a7ff68c8-81d7-4af2-aa12-a84a616a68e6`, repository ID, custom domains, build settings, environment-variable names, compatibility settings, and latest/canonical deployment IDs were unchanged. Both environments use build image v3. GitHub's `main` still pointed at `5e72f33f5c6e67174138bb8cd284b9e2f5dfe436` afterward. No push, deployment, DNS change, or analytics change occurred. The connection configuration is verified; a hosted Git clone/build remains untested until a deployment is explicitly approved.
+A fresh API readback after reconnection matched the pre-change snapshot except for the repository owner and owner ID. Project ID `a7ff68c8-81d7-4af2-aa12-a84a616a68e6` was preserved. Subsequent preview and production deployments verified Git cloning, dependency installation, and builds through the organization connection.
 
-The apex currently has a proxied A record pointing at the placeholder `192.0.2.1`. An enabled redirect rule matches exactly `tvr.works` and returns a 301 to `https://tim.vanreenen.me/work`, preserving the query string. No zone Worker routes or legacy Page Rules were present.
+The apex record (`30e440d14779cc4ef176d45fcaf90843`) is now a proxied CNAME to `company-site-8f1.pages.dev`, replacing the placeholder A record `192.0.2.1`. The existing redirect rule (`fc6e73b1bc394d01a5b5f75c90e2961c`, ruleset `2894e9db52814ee188575f8f256e01ed`) now matches exactly `llc.tvr.works` and returns a 301 to `concat("https://tvr.works", http.request.uri.path)`, preserving query strings. The former apex-to-personal-work-page redirect is no longer active. No Worker route or legacy Page Rule was added.
 
-## Build settings for a future release
+## Build settings
 
 | Setting | Value |
 | --- | --- |
@@ -27,32 +27,40 @@ The apex currently has a proxied A record pointing at the placeholder `192.0.2.1
 | Output directory | `dist/client` |
 | Root directory | Repository root |
 | Production `VITE_SITE_ORIGIN` | `https://tvr.works` |
-| Production `VITE_SITE_INDEXING` | `public` only at public release |
+| Production `VITE_SITE_INDEXING` | `public` |
 | Preview `VITE_SITE_ORIGIN` | `https://tvr.works` |
 | Preview `VITE_SITE_INDEXING` | `preview` |
 
-Use the checked-in `.node-version`; [Pages supports this runtime pin](https://developers.cloudflare.com/pages/configuration/build-image/). Confirm the actual hosted build image/runtime and successful static output on the first deployment. Only `dist/client` should be uploaded; no server or Pages Functions are needed.
+Pages build image v3 detected Node `26.13.0` and npm `11.20.0`, matching the local pins. [Pages supports the checked-in runtime pin](https://developers.cloudflare.com/pages/configuration/build-image/). The build prerendered three pages, uploaded 22 static files from `dist/client`, parsed the security headers, and deployed no Functions or runtime server.
 
-For hosted review before release, retain `preview` indexing in both environments. The `public` production setting enables the generated sitemap and crawler permissions. The source rejects public indexing on a non-main Cloudflare branch.
+The `public` production setting enables the generated sitemap and crawler permissions. The source rejects public indexing on a non-main Cloudflare branch. For future review branches, retain `preview` indexing.
 
-## Domain cutover after release approval
+## Domain cutover
 
-1. GitHub App access and the updated Pages source configuration are verified. Save the build settings before pushing code. A push to `main` currently triggers production deployment to the existing `llc` hostname.
-2. Build and verify the site on a hosted preview, including home/privacy/custom 404, static assets, CSP, contact links, mobile layout, and crawler metadata.
-3. Associate `tvr.works` through **Pages → Custom domains**. Replace the conflicting apex placeholder A record with the Pages CNAME as part of this setup; DNS alone is insufficient. Wait for active domain/TLS status. See [Pages custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/).
-4. Disable the old exact-apex redirect at cutover. Verify the apex serves the new site over HTTPS, including `/privacy`, and enable public indexing only for the approved release.
-5. Redirect `llc.tvr.works` to the apex, preserving paths and queries. Optionally add DNS and a redirect for `www.tvr.works`. Keep rules hostname-specific so product subdomains are unaffected.
+1. Saved build settings before pushing. The organization-connected GitHub integration built preview `0fbc2621-afe2-4cbe-a1ff-94195131b8d7`, verified before the production push.
+2. Verified production deployment `a106f7ec-7274-4048-9c1f-72f41b11f3ab` on its Pages URL before cutover.
+3. Associated `tvr.works` with the existing Pages project and changed the apex DNS record to the Pages CNAME. See [Pages custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/).
+4. Changed the existing redirect from the old apex destination to an exact-host legacy `llc` redirect. Initial domain validation returned a transient 522/pending CNAME status; after validation completed, both the API and dashboard showed Active with SSL, and the live HTTP checks passed.
+5. Verified `https://llc.tvr.works/privacy?source=launch` returns 301 to `https://tvr.works/privacy?source=launch`. No `www` record or redirect was added.
 
-Existing product CNAMEs, MX records, and TXT records do not need changes for this website. Email Routing is ready and an enabled forwarding rule exists for `tim@tvr.works`; message delivery itself has not been tested.
+The final DNS readback retained all 16 record IDs; only the apex record was changed. Product CNAMEs and mail records were left in place. Email Routing is ready and an enabled forwarding rule exists for `tim@tvr.works`; message delivery itself has not been tested.
 
-## Edge features to verify
+## Edge features
 
-Zone-wide email obfuscation is enabled, Rocket Loader is disabled, and HTTPS redirection is enabled. The static finalizer now adds Cloudflare's documented `email_off` exemptions around native mailto anchors in the delivered HTML. This keeps the React components unchanged and preserves readable, usable contact links without JavaScript. All 18 Chromium/WebKit browser checks passed with this artifact change, including navigation/hydration, contact semantics, responsive layouts, and axe scans. Hosted edge behavior still needs release verification. [Cloudflare documents the exemption](https://developers.cloudflare.com/waf/tools/scrape-shield/email-address-obfuscation/).
+Zone-wide email obfuscation is enabled, Rocket Loader is disabled, and HTTPS redirection is enabled. The static finalizer adds Cloudflare's documented `email_off` exemptions around native mailto anchors in the delivered HTML. This keeps the React components unchanged and preserves readable, usable contact links without JavaScript. Hosted HTTP checks confirmed intact mailto links, no email-protection rewrite, no decoding script, and valid CSP hashes. Live client navigation completed without console warnings or errors. [Cloudflare documents the exemption](https://developers.cloudflare.com/waf/tools/scrape-shield/email-address-obfuscation/).
 
-Pages Web Analytics is not configured on this project. Enabling it later requires matching CSP permissions and privacy disclosures for the actual injected beacon and endpoints. No analytics configuration was changed during this investigation.
+Pages Web Analytics is not configured on this project. The account's one automatically installed Web Analytics site belongs to a different zone; the `tvr.works` Zaraz configuration has no tools. No visitor-analytics injection was observed, and no analytics configuration was changed. Enabling it later requires matching CSP permissions and privacy disclosures for the actual beacon/endpoints.
 
-## Release preparation
+## Verification and limits
 
-The existing Pages project now has `npm run build` and `dist/client` saved. Both environments use `https://tvr.works` as the canonical origin; preview indexing is `preview` and production indexing is `public`. The project retains build image v3 and the repository's Node pin. No new deployment had run when these settings were saved.
+Local checks passed `npm run check` and `npm run test:browser`: shadcn/Oxlint, TypeScript, four configuration tests, and all 18 Chromium/WebKit browser cases. The Browser plugin is not available in this session, so the existing Playwright workflow was used. Its prerender/preview servers required execution outside the filesystem sandbox to bind localhost; the sandboxed attempt failed before running browser tests. Coverage includes static content without JavaScript, contact semantics, client navigation/history, 320–1920px reflow, 200% text, reduced motion, and axe scans.
 
-Local release checks passed lint (including shadcn), TypeScript, four configuration tests, and all 18 Chromium/WebKit browser cases. The Browser plugin is not available in this session, so the existing Playwright workflow was used. Its prerender/preview servers required execution outside the filesystem sandbox to bind localhost; the sandboxed attempt failed before running browser tests. A hosted preview will verify the Git clone/build and actual Pages delivery before production cutover.
+Preview, production Pages URL, and final apex HTTP checks passed for home/privacy 200 responses, a genuine custom 404, 11 directly referenced assets, native contact links, CSP hashes, canonicals, and crawler files. Production has `index, follow` and a two-page sitemap; preview has `noindex, follow`, a disallowing robots file, and an empty sitemap. The live in-app browser verified home → Privacy → home, correct titles, no app errors/overlays, and no desktop overflow at its actual 1280px viewport. The browser viewport override did not resize this tab, so hosted mobile is not claimed; local Chromium/WebKit responsive checks passed. Physical devices, manual screen-reader use, Firefox, and field performance remain untested.
+
+The browser initially retained the old permanent redirect for the bare apex and tried to open the personal site; automatic review blocked that unrelated origin. The fresh `https://tvr.works/?launch=0a7b039` URL rendered the company site normally, while direct HTTP checks independently confirmed the bare apex returns 200. A browser retaining the former 301 may need its cached redirect cleared or a fresh URL/private window.
+
+HTTP evidence and screenshots were saved outside the repository under `/private/tmp/tvr-*`. The production build/deployment IDs above remain the durable release references.
+
+## Rollback notes
+
+Pages retains the previous production deployment in history. Rolling back would restore its old content, not the current DNS or redirect settings; assess those separately. Before launch, the apex was a proxied A record to `192.0.2.1` and the exact-apex 301 targeted `https://tim.vanreenen.me/work`. Do not restore that placeholder record without also restoring appropriate routing. No rollback was performed.

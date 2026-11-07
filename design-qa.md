@@ -61,9 +61,9 @@ The flow under test was homepage → contact links and Privacy → return/histor
 
 ## Open decisions and limits
 
-- Public hostname remains configurable between `tvr.works` and `llc.tvr.works`. The confirmed contact address is `tim@tvr.works`.
+- The public hostname is now `tvr.works`; `llc.tvr.works` redirects to it. The confirmed contact address is `tim@tvr.works`.
 - No physical-device or manual screen-reader audit was performed. Automated scans and engine tests are evidence for the tested states, not a blanket accessibility-conformance claim. Firefox and real network/field performance were not measured.
-- No push, deployment, DNS, Cloudflare monitoring change, or public indexing change occurred. Cloudflare-injected monitoring/CSP/privacy must be reconciled against actual settings before future publication.
+- The approved release was published on November 7. See `docs/cloudflare-launch.md` for deployment and domain evidence. No visitor-analytics feature was enabled; the live delivery matches the current privacy/CSP boundary.
 - Further atmospheric art direction is optional; no unresolved P0/P1/P2 design findings remain.
 
 ## Implementation checklist
@@ -73,3 +73,11 @@ The flow under test was homepage → contact links and Privacy → return/histor
 - [x] Working contact, Privacy, history, and missing-page behavior.
 - [x] Static SEO/sharing metadata, crawler controls, and configurable identity.
 - [x] Local verification and visual comparison; preview left running for review.
+
+## Production release verification
+
+- Commit `0a7b039` passed lint/shadcn lint, TypeScript, four configuration tests, all 18 Chromium/WebKit cases, and public-build metadata/artifact checks. Native email anchors receive documented Cloudflare exemptions during static finalization; no visual component change was required.
+- Preview `0fbc2621-afe2-4cbe-a1ff-94195131b8d7` and production `a106f7ec-7274-4048-9c1f-72f41b11f3ab` built successfully through the organization's Git connection with Node 26.13.0/npm 11.20.0 and no Functions.
+- Actual apex HTTP checks passed home/privacy 200, missing-page 404, 11 directly referenced assets, security headers/CSP hashes, contact links, canonical URLs, public robots, and the two-page sitemap. Cloudflare reports Active/SSL for the custom domain. The former hostname redirects while retaining path/query.
+- Live desktop inspection at the actual 1280px viewport showed the approved composition and no overflow or runtime warnings/errors. Home → Privacy → home passed. The in-app viewport override did not resize this tab; responsive evidence remains the local Chromium/WebKit suite and existing approved captures. Physical-device and screen-reader limits above still apply.
+- Launch screenshots and HTTP probe results remain outside the repository under `/private/tmp/tvr-*`. The browser retained an old cached apex 301; a fresh production URL rendered correctly, and independent bare-apex HTTP requests returned 200.
