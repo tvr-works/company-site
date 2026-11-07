@@ -1,6 +1,6 @@
 # Cloudflare launch record
 
-Published and verified November 7, 2026 at [tvr.works](https://tvr.works). Release commit: `0a7b039da05741a6e072117d73a4b1ba53ef72b9`.
+Published and verified November 7, 2026 at [tvr.works](https://tvr.works). Latest release commit: `276d132685ee2a69ecea7d4f2372170ccce27b3e`. The initial launch commit was `0a7b039da05741a6e072117d73a4b1ba53ef72b9`.
 
 ## Repository ownership
 
@@ -10,7 +10,7 @@ The organization's existing Cloudflare Workers and Pages GitHub App uses selecte
 
 ## Existing hosting
 
-The personal Cloudflare account, **Tim VanReenen**, owns the active `tvr.works` zone and the existing `company-site` Pages project. Production deployment `a106f7ec-7274-4048-9c1f-72f41b11f3ab` serves the new site, with `tvr.works` and `llc.tvr.works` both showing active domain validation and SSL. The earlier deployment, `45f241ce-80b9-42ef-ba03-661b6ad2d892`, remains in the project's history.
+The personal Cloudflare account, **Tim VanReenen**, owns the active `tvr.works` zone and the existing `company-site` Pages project. Production deployment `396dfd33-678d-4d8d-9d80-51118c09f939` serves the current site, with `tvr.works` and `llc.tvr.works` both showing active domain validation and SSL. The initial launch deployment, `a106f7ec-7274-4048-9c1f-72f41b11f3ab`, and the older `45f241ce-80b9-42ef-ba03-661b6ad2d892` remain in the project's history.
 
 With explicit approval, the existing Pages project's Git source was disconnected and reconnected to `tvr-works/company-site`. Automatic production and preview builds were paused before disconnecting, remained paused while reconnecting, and were then restored to their previous settings: production deployments from `main`, all preview branches, and PR comments enabled. The project was reused; no replacement project was needed.
 
@@ -60,6 +60,14 @@ Preview, production Pages URL, and final apex HTTP checks passed for home/privac
 The browser initially retained the old permanent redirect for the bare apex and tried to open the personal site; automatic review blocked that unrelated origin. The fresh `https://tvr.works/?launch=0a7b039` URL rendered the company site normally, while direct HTTP checks independently confirmed the bare apex returns 200. A browser retaining the former 301 may need its cached redirect cleared or a fresh URL/private window.
 
 HTTP evidence and screenshots were saved outside the repository under `/private/tmp/tvr-*`. The production build/deployment IDs above remain the durable release references.
+
+## Narrative and footer refinement
+
+With approval to proceed on all three refinements, commit `276d132` added the 20-year introduction, removed the email subject query, and mirrored the compact header contact controls in the footer. Privacy now sits beside the copyright. The shared contact navigation has distinct Header contact/Footer contact labels and uses the same button variant; mobile footer groups stack without changing their touch targets.
+
+`npm run check` and all 18 Chromium/WebKit cases passed. Additional inspection at 1440px, 390px, and 320px with 200% text confirmed matching header/footer button geometry, no horizontal overflow, and working footer Privacy navigation. WebKit's screenshot operation itself emitted a CSP stylesheet warning; staged probes isolated it to screenshot capture, with no application load/navigation warnings or errors. No CSP relaxation was introduced.
+
+Preview `691a7a1d-39c8-41d3-a727-06425b7fc85e` passed HTTP artifact checks before promotion. Production `396dfd33-678d-4d8d-9d80-51118c09f939` then passed the same checks at the apex: the new copy, three bare mailto contact CTAs on home, two LinkedIn links, footer navigation on every page, home/privacy 200, custom 404, assets, public crawler files, and CSP hashes. The live in-app browser verified home → footer Privacy → home with no console warnings/errors and captured the updated narrative/footer at `/private/tmp/tvr-refined-live-footer.png`. Local desktop/mobile/enlarged-text captures are `/private/tmp/tvr-footer-*.png`; HTTP reports are `/private/tmp/tvr-refinement-*-http.json`. No DNS or monitoring configuration changed for this release.
 
 ## Rollback notes
 
