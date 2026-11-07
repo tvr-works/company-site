@@ -12,7 +12,7 @@ test('home, privacy, and missing pages have readable static content without Java
     const response = await page.goto(`http://127.0.0.1:4174${path}`);
     expect(response?.status()).toBe(status);
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Let’s talk — email Tim about your project' }).first()).toHaveAttribute('href', /^mailto:tim@tvr\.works/);
+    await expect(page.getByRole('link', { name: 'Let’s talk — email Tim about your project' }).first()).toHaveAttribute('href', 'mailto:tim@tvr.works');
   }
   await context.close();
 });
@@ -41,15 +41,21 @@ test('contact actions retain link semantics and keyboard users can skip the head
   await page.keyboard.press('Enter');
   await expect(page.locator('main')).toBeFocused();
   const contact = page.getByRole('link', { name: 'Let’s talk — email Tim about your project' });
-  await expect(contact).toHaveCount(2);
+  await expect(contact).toHaveCount(3);
   for (const link of await contact.all()) {
+    await expect(link).toHaveAttribute('href', 'mailto:tim@tvr.works');
     await expect(link).not.toHaveAttribute('role', 'button');
     const color = await link.evaluate(el => getComputedStyle(el).color);
     const background = await link.evaluate(el => getComputedStyle(el).backgroundColor);
     expect(color).not.toBe(background);
   }
-  await expect(page.getByRole('link', { name: 'LinkedIn', exact: true })).toHaveCount(1);
-  await expect(page.locator('header').getByRole('link', { name: 'LinkedIn', exact: true })).toHaveAttribute('href', 'https://www.linkedin.com/in/tvanreenen/');
+  await expect(page.getByRole('link', { name: 'LinkedIn', exact: true })).toHaveCount(2);
+  for (const label of ['Header contact', 'Footer contact']) {
+    const navigation = page.getByRole('navigation', { name: label, exact: true });
+    await expect(navigation.getByRole('link', { name: 'LinkedIn', exact: true })).toHaveAttribute('href', 'https://www.linkedin.com/in/tvanreenen/');
+    await expect(navigation.getByRole('link', { name: 'Let’s talk — email Tim about your project' })).toHaveAttribute('href', 'mailto:tim@tvr.works');
+  }
+  await expect(page.locator('.footer-legal').getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', '/privacy');
   await expect(page.locator('.perspective-copy').getByRole('link')).toHaveCount(0);
 });
 

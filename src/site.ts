@@ -10,7 +10,7 @@ export const site = {
   updated: '2026-11-07',
 };
 
-export const contactHref = `mailto:${site.email}?subject=Let%E2%80%99s%20talk%20about%20a%20project`;
+export const contactHref = `mailto:${site.email}`;
 
 export function pageHead(path: string, title: string, description: string) {
   const url = `${site.origin}${path}`;

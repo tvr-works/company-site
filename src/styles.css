@@ -63,10 +63,10 @@ button, input { font: inherit; }
 .brand { display: inline-flex; align-items: center; gap: 0.65rem; text-decoration: none; flex-shrink: 0; }
 .brand img { display: block; width: 84px; height: auto; }
 .brand span { font-size: 2.75rem; font-weight: 720; line-height: 1; letter-spacing: -0.06em; }
-.header-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 1.5rem; max-width: 100%; }
-.header-link { display: inline-flex; align-items: center; min-height: 44px; gap: 0.3rem; color: var(--muted-foreground); font-size: 1rem; text-decoration: none; }
-.header-link:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 0.25em; }
-.header-link svg { width: 1em; height: 1em; stroke-width: 1.7; }
+.contact-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 1.5rem; max-width: 100%; }
+.contact-social-link { display: inline-flex; align-items: center; min-height: 44px; gap: 0.3rem; color: var(--muted-foreground); font-size: 1rem; text-decoration: none; }
+.contact-social-link:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 0.25em; }
+.contact-social-link svg { width: 1em; height: 1em; stroke-width: 1.7; }
 .hero { padding-top: clamp(1.5rem, 2.35vw, 2.25rem); text-align: center; }
 .hero h1 { margin: 0; font-size: clamp(3.4rem, 8.8vw, 8rem); font-weight: 720; line-height: 0.98; letter-spacing: -0.055em; }
 .hero h1 span { display: inline-block; max-width: 100%; text-wrap: balance; }
@@ -87,9 +87,10 @@ button, input { font: inherit; }
 .perspective-copy { font-size: clamp(1.125rem, 2.15vw, 1.625rem); line-height: 1.4; letter-spacing: -0.015em; }
 .perspective-copy p { margin: 0 0 1.5rem; }
 .perspective-copy p:last-child { margin-bottom: 0; }
-.site-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; padding-block: 1rem 4rem; border-top: 1px solid color-mix(in srgb, var(--border), transparent 65%); color: var(--muted-foreground); font-size: 0.9375rem; }
+.site-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; padding-block: 1.25rem 4rem; border-top: 1px solid color-mix(in srgb, var(--border), transparent 65%); color: var(--muted-foreground); font-size: 0.9375rem; }
+.footer-legal { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.65rem; min-width: 0; }
 .site-footer small { font-size: inherit; }
-.site-footer a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 0.25em; }
+.footer-legal a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 0.25em; }
 .information-page { max-width: 860px; padding-block: 4rem 6rem; }
 .information-page h1 { font-size: clamp(3rem, 6vw, 5rem); line-height: 1.02; letter-spacing: -0.045em; font-weight: 680; margin: 3rem 0 1.5rem; }
 .information-page p { font-size: 1.125rem; line-height: 1.7; color: var(--muted-foreground); text-wrap: pretty; }
@@ -141,8 +142,8 @@ h1, h2, h3 { overflow-wrap: anywhere; }
   .brand img { width: 49px; }
   .brand span { font-size: 1.75rem; }
   .site-header { gap: 1rem; }
-  .header-actions { gap: 0.75rem; }
-  .header-link { font-size: 0.875rem; }
+  .contact-actions { gap: 0.75rem; }
+  .contact-social-link { font-size: 0.875rem; }
   .hero { padding-top: 3rem; }
   .hero h1 { font-size: clamp(2.65rem, 10.7vw, 3.8rem); line-height: 1.04; }
   .hero > p { font-size: 1.125rem; margin-bottom: 2rem; }
@@ -156,7 +157,8 @@ h1, h2, h3 { overflow-wrap: anywhere; }
   .perspective h2 br:nth-of-type(odd) { display: none; }
   .perspective h2 br:nth-of-type(odd)::after { content: ' '; }
   .perspective-copy p { margin-bottom: 1.5rem; }
-  .site-footer { font-size: 0.8125rem; padding-bottom: 2rem; }
+  .site-footer { flex-direction: column; align-items: flex-start; font-size: 0.8125rem; padding-bottom: 2rem; }
+  .site-footer .contact-actions { width: 100%; }
   .information-page { padding-block: 2rem 3.5rem; }
   .information-page h1 { margin-top: 2rem; }
 }
@@ -167,5 +169,5 @@ h1, h2, h3 { overflow-wrap: anywhere; }
   .site-shell { background: Canvas; }
   .partnership-art { opacity: 0.5; }
   .service { background: none; border-left: 2px solid CanvasText; }
-  .header-link { color: LinkText; }
+  .contact-social-link { color: LinkText; }
 }
