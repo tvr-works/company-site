@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.cache/
+.tanstack/
+src/routeTree.gen.ts
+output/
+test-results/
+playwright-report/
+.DS_Store
+*.local
+
