@@ -66,4 +66,4 @@ No advertising, visitor-analytics script, third-party embed, contact form, or tr
 
 Before any future publication, confirm the final hostname/email and actual Cloudflare monitoring configuration. Cloudflare can inject Web Analytics outside the source code; if enabled, update the privacy disclosure and CSP to match the actual beacon/endpoints. The current CSP intentionally permits only same-origin script/network resources. Do not claim that absence of a script in source proves absence of dashboard-injected services.
 
-This work is local only. No Git push, Pages project, DNS change, analytics setting, deployment, or indexing change has been performed.
+The site implementation remains local. Repository ownership has moved to [tvr-works/company-site](https://github.com/tvr-works/company-site); see the [Cloudflare launch preparation](docs/cloudflare-launch.md) for the inspected hosting state and remaining setup. No Git push, new Pages project, DNS change, analytics setting, deployment, or indexing change has been performed.
