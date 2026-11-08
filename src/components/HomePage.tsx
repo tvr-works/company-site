@@ -16,7 +16,7 @@ export function HomePage() {
         <div className="perspective-copy">
           <p>I’m Tim VanReenen. I bring 20 years of experience across software engineering, product design, product management, and technical leadership.</p>
           <p>Whether you’re a founder with a new idea or a business owner looking to build a new system or rebuild an existing one, I can help you design it, build it, and keep it running.</p>
-          <p>I’ve partnered directly with clients and supported consulting teams as a subcontractor on their client projects. I build applications and cloud infrastructure on platforms that fit your project. My experience includes Azure and Google Cloud.</p>
+          <p>I take the time to understand how your business works, help you work through the options, and take ownership of the engineering. You’ll work directly with me, whether I’m building for your business or supporting a project for one of your clients.</p>
         </div>
       </section>
     </main>
