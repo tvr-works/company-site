@@ -75,6 +75,18 @@ After local copy review, the user explicitly requested shipping the final three-
 
 The build, shadcn/Oxlint, TypeScript, and all 18 Chromium/WebKit cases passed. Production deployment `e4bc11b3-05f2-4ade-bfb2-32b5a49e3a27` completed successfully without Functions. Live HTTP probes verified the exact final wording, home/privacy 200, missing-page 404, 11 assets, bare mailto links, CSP hashes, canonicals, public robots, and sitemap. Desktop Chromium at 1440px and mobile WebKit at 390px verified exact paragraph text, no horizontal overflow or console/runtime errors, and home → Privacy → home navigation. Local browser use is disabled in Work settings; the existing headless test tooling was used. Evidence is saved at `/private/tmp/tvr-final-narrative-live.png` and `/private/tmp/tvr-final-narrative-live-http.json`. No DNS or monitoring settings changed.
 
+## Search discovery audit — November 8, 2026
+
+Read-only checks against the personal Cloudflare account and the public apex confirmed:
+
+- AI Search, Agent, individual Personal Agent, and Training blocking policies are disabled. Bot Fight Mode and AI crawler link-maze protection are also disabled. These settings were left unchanged to preserve discovery access.
+- Managed robots and Bot Preference Sync are disabled. The effective `robots.txt` permits crawling and points to `https://tvr.works/sitemap.xml`; Cloudflare's parsed robots response agrees.
+- The live homepage returns 200, `index, follow`, and the apex canonical URL. The live sitemap returns 200 and lists the homepage and Privacy page. The live sharing image still uses `/social-card.png`; the approved `/social-card-v2.png` remains in the unpublished local changes.
+- A Google site-verification TXT record already exists at the zone apex. This establishes that a token is present, not that the current Search Console account has a verified property. No Bing verification DNS record was found; other verification methods remain possible.
+- The zone is on Free. Markdown for Agents is off and not editable on this plan. A request with `Accept: text/markdown` returns HTML. No upgrade or conversion layer was added.
+
+[Crawler Hints](https://developers.cloudflare.com/cache/advanced-configuration/crawler-hints/) is available on Free and applies across the zone. Its state could not be established through the connector's documented API; dashboard confirmation is pending. Search Console property verification, sitemap submission, and Bing Webmaster Tools setup also require confirmation in the signed-in services. No DNS, crawler policy, or deployment changes were made during this audit.
+
 ## Rollback notes
 
 Pages retains the previous production deployment in history. Rolling back would restore its old content, not the current DNS or redirect settings; assess those separately. Before launch, the apex was a proxied A record to `192.0.2.1` and the exact-apex 301 targeted `https://tim.vanreenen.me/work`. Do not restore that placeholder record without also restoring appropriate routing. No rollback was performed.
