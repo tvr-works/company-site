@@ -1,4 +1,6 @@
-# TVR Works site
+# Initial site plan (archived)
+
+This is the historical plan for the initial local build. Its hostname decisions and publication restrictions describe that phase, not the current project state. Use the [README](../../README.md) for current setup and the [Cloudflare launch record](../cloudflare-launch.md) for publication history.
 
 ## Approved direction
 

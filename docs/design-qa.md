@@ -1,5 +1,7 @@
 # TVR Works design and implementation QA
 
+This record preserves design decisions and verification at each release checkpoint. Test counts and local publication boundaries refer to those checkpoints. See the [README](../README.md) for current checks and the [Cloudflare launch record](cloudflare-launch.md) for hosted release evidence. Paths in historical entries are repository-relative.
+
 final result: passed
 
 ## Initial build visual truth and evidence
