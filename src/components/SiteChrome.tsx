@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ArrowUpRight } from 'lucide-react';
 import { buttonVariants } from './ui/button';
 import { contactHref, site } from '../site';
+import { cn } from '../lib/utils';
 
 export function ContactLink({ compact = false }: { compact?: boolean }) {
   return (
@@ -15,9 +16,9 @@ export function ContactLink({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function ContactActions({ label }: { label: string }) {
+function ContactActions({ label, className }: { label: string; className?: string }) {
   return (
-    <nav className="contact-actions" aria-label={label}>
+    <nav className={cn('contact-actions justify-end', className)} aria-label={label}>
       <a className="contact-social-link" href={site.linkedin}>
         LinkedIn <ArrowUpRight aria-hidden="true" />
       </a>
@@ -45,13 +46,18 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer page-width">
-      <div className="footer-legal">
+    <footer className="site-footer page-width grid grid-cols-1 items-center justify-items-center gap-x-8 gap-y-3 text-center @2xl:grid-cols-2 @2xl:text-left">
+      <div className="footer-legal flex min-w-0 flex-wrap items-center justify-center gap-x-2.5 gap-y-1 @2xl:justify-self-start @2xl:justify-start">
         <small>© 2026 {site.legalName}</small>
-        <span aria-hidden="true">·</span>
-        <Link to="/privacy">Privacy</Link>
+        <span className="inline-flex items-center gap-2.5">
+          <span aria-hidden="true">·</span>
+          <Link to="/privacy">Privacy</Link>
+        </span>
       </div>
-      <ContactActions label="Footer contact" />
+      <ContactActions
+        label="Footer contact"
+        className="justify-center @2xl:justify-self-end @2xl:justify-end"
+      />
     </footer>
   );
 }

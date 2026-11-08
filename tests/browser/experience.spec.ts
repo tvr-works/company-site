@@ -85,6 +85,52 @@ test('service content reflows without horizontal overflow from 320px through lar
   }
 });
 
+test('footer groups stay balanced and separate at phone widths and enlarged text', async ({
+  page,
+}) => {
+  for (const scale of [1, 2]) {
+    for (const width of [320, 390, 540, 541, 639, 640, 671, 672, 673, 768, 1023, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      await page.evaluate((value) => {
+        document.documentElement.style.fontSize = `${value * 100}%`;
+      }, scale);
+      await page.evaluate(() => document.fonts.ready);
+      const footer = page.getByRole('contentinfo');
+      const [footerBox, legal, contacts] = await Promise.all([
+        footer.boundingBox(),
+        footer.locator('.footer-legal').boundingBox(),
+        footer.getByRole('navigation', { name: 'Footer contact' }).boundingBox(),
+      ]);
+      if (!footerBox || !legal || !contacts) throw new Error('Footer groups have no layout');
+      const context = `${width}px at ${scale * 100}% text`;
+      expect(
+        legal.x + legal.width <= contacts.x ||
+          contacts.x + contacts.width <= legal.x ||
+          legal.y + legal.height <= contacts.y ||
+          contacts.y + contacts.height <= legal.y,
+        `footer overlap: ${context}`,
+      ).toBe(true);
+      if (width <= 540) {
+        expect(legal.y + legal.height, context).toBeLessThanOrEqual(contacts.y);
+        for (const group of [legal, contacts]) {
+          expect(
+            Math.abs(group.x + group.width / 2 - (footerBox.x + footerBox.width / 2)),
+            `footer centering: ${context}`,
+          ).toBeLessThan(1);
+        }
+      }
+      for (const link of await footer.getByRole('link').all()) {
+        const box = await link.boundingBox();
+        if (!box) throw new Error(`Footer link has no layout: ${context}`);
+        expect(box.x, context).toBeGreaterThanOrEqual(footerBox.x - 1);
+        expect(box.x + box.width, context).toBeLessThanOrEqual(footerBox.x + footerBox.width + 1);
+        expect(box.height, context).toBeGreaterThanOrEqual(44);
+      }
+    }
+  }
+});
+
 test('200% text remains readable and reduced motion is respected', async ({ page }) => {
   for (const width of [320, 640, 1023]) {
     await page.setViewportSize({ width, height: 900 });
