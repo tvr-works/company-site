@@ -1,0 +1,5 @@
+{
+  "javascript": { "maxRawKiB": 450, "maxGzipKiB": 150 },
+  "css": { "maxRawKiB": 36, "maxGzipKiB": 8 },
+  "fonts": { "maxRawKiB": 36 }
+}

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run lint && vite build && tsc --noEmit && node --import tsx scripts/finalize-static.ts",
+    "build": "npm run lint && vite build && tsc --noEmit && node --import tsx scripts/finalize-static.ts && npm run check:budget",
     "preview": "vite preview --config vite.preview.config.ts",
     "routes": "node --import tsx scripts/generate-routes.ts",
     "typecheck": "npm run routes && tsc --noEmit",
@@ -21,7 +21,8 @@
     "asset:social": "node --import tsx scripts/render-social-card.ts",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
-    "test:artifact": "playwright test --grep @artifact"
+    "test:artifact": "playwright test --grep @artifact",
+    "check:budget": "node --import tsx scripts/check-build-budget.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.9.0",
