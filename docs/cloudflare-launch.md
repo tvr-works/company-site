@@ -1,6 +1,6 @@
 # Cloudflare launch record
 
-Published and verified November 7, 2026 at [tvr.works](https://tvr.works). Latest release commit: `276d132685ee2a69ecea7d4f2372170ccce27b3e`. The initial launch commit was `0a7b039da05741a6e072117d73a4b1ba53ef72b9`.
+Published and verified November 7, 2026 at [tvr.works](https://tvr.works). Latest release commit: `6a7473caa81751bd91af41f3b55859c7be568d42`. The initial launch commit was `0a7b039da05741a6e072117d73a4b1ba53ef72b9`.
 
 ## Repository ownership
 
@@ -10,7 +10,7 @@ The organization's existing Cloudflare Workers and Pages GitHub App uses selecte
 
 ## Existing hosting
 
-The personal Cloudflare account, **Tim VanReenen**, owns the active `tvr.works` zone and the existing `company-site` Pages project. Production deployment `396dfd33-678d-4d8d-9d80-51118c09f939` serves the current site, with `tvr.works` and `llc.tvr.works` both showing active domain validation and SSL. The initial launch deployment, `a106f7ec-7274-4048-9c1f-72f41b11f3ab`, and the older `45f241ce-80b9-42ef-ba03-661b6ad2d892` remain in the project's history.
+The personal Cloudflare account, **Tim VanReenen**, owns the active `tvr.works` zone and the existing `company-site` Pages project. Production deployment `e4bc11b3-05f2-4ade-bfb2-32b5a49e3a27` serves the current site, with `tvr.works` and `llc.tvr.works` both showing active domain validation and SSL. Earlier deployments, including the footer refinement `396dfd33-678d-4d8d-9d80-51118c09f939`, initial launch `a106f7ec-7274-4048-9c1f-72f41b11f3ab`, and original `45f241ce-80b9-42ef-ba03-661b6ad2d892`, remain in the project's history.
 
 With explicit approval, the existing Pages project's Git source was disconnected and reconnected to `tvr-works/company-site`. Automatic production and preview builds were paused before disconnecting, remained paused while reconnecting, and were then restored to their previous settings: production deployments from `main`, all preview branches, and PR comments enabled. The project was reused; no replacement project was needed.
 
@@ -68,6 +68,12 @@ With approval to proceed on all three refinements, commit `276d132` added the 20
 `npm run check` and all 18 Chromium/WebKit cases passed. Additional inspection at 1440px, 390px, and 320px with 200% text confirmed matching header/footer button geometry, no horizontal overflow, and working footer Privacy navigation. WebKit's screenshot operation itself emitted a CSP stylesheet warning; staged probes isolated it to screenshot capture, with no application load/navigation warnings or errors. No CSP relaxation was introduced.
 
 Preview `691a7a1d-39c8-41d3-a727-06425b7fc85e` passed HTTP artifact checks before promotion. Production `396dfd33-678d-4d8d-9d80-51118c09f939` then passed the same checks at the apex: the new copy, three bare mailto contact CTAs on home, two LinkedIn links, footer navigation on every page, home/privacy 200, custom 404, assets, public crawler files, and CSP hashes. The live in-app browser verified home → footer Privacy → home with no console warnings/errors and captured the updated narrative/footer at `/private/tmp/tvr-refined-live-footer.png`. Local desktop/mobile/enlarged-text captures are `/private/tmp/tvr-footer-*.png`; HTTP reports are `/private/tmp/tvr-refinement-*-http.json`. No DNS or monitoring configuration changed for this release.
+
+## Final narrative release
+
+After local copy review, the user explicitly requested shipping the final three-paragraph narrative. Commit `6a7473c` keeps the 20-year introduction, welcomes founders and business owners who need a new or better system, and closes on business understanding, engineering responsibility, and a direct relationship for the reader's own project or their client's project. The technical-platform sentences were removed from this narrative during the approved revision.
+
+The build, shadcn/Oxlint, TypeScript, and all 18 Chromium/WebKit cases passed. Production deployment `e4bc11b3-05f2-4ade-bfb2-32b5a49e3a27` completed successfully without Functions. Live HTTP probes verified the exact final wording, home/privacy 200, missing-page 404, 11 assets, bare mailto links, CSP hashes, canonicals, public robots, and sitemap. Desktop Chromium at 1440px and mobile WebKit at 390px verified exact paragraph text, no horizontal overflow or console/runtime errors, and home → Privacy → home navigation. Local browser use is disabled in Work settings; the existing headless test tooling was used. Evidence is saved at `/private/tmp/tvr-final-narrative-live.png` and `/private/tmp/tvr-final-narrative-live-http.json`. No DNS or monitoring settings changed.
 
 ## Rollback notes
 
