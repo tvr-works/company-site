@@ -9,6 +9,14 @@ export const siteIdentity = {
   linkedin: 'https://www.linkedin.com/in/tvanreenen/',
 } as const;
 
+export const socialCard = {
+  path: '/social-card-v2.png',
+  width: 1200,
+  height: 630,
+  type: 'image/png',
+  alt: 'TVR Works — Your vision. A partner to build it. Custom software, modernization, AI & technical leadership.',
+} as const;
+
 export const sitePages = {
   home: {
     path: '/',

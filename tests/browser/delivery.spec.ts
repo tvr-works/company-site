@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { expect, test } from '@playwright/test';
+import sharp from 'sharp';
 
 // Exercise the policy date west of UTC as well as the prerendered server output.
 test.use({ timezoneId: 'America/Los_Angeles' });
@@ -48,9 +49,51 @@ test(
     expect(graph).toMatchObject({
       '@graph': [{ '@type': 'Organization' }, { '@type': 'Person' }, { '@type': 'WebSite' }],
     });
-    const image = await request.get('/social-card.png');
+    const image = await request.get('/social-card-v2.png');
     expect(image.ok()).toBe(true);
     expect(image.headers()['content-type']).toContain('image/png');
+    expect(await sharp(await image.body()).metadata()).toMatchObject({
+      width: 1200,
+      height: 630,
+      format: 'png',
+      hasAlpha: false,
+    });
+    for (const [path, title] of [
+      ['/', 'TVR Works — Custom Software, Applied AI & Technical Leadership'],
+      ['/privacy', 'Privacy — TVR Works'],
+    ] as const) {
+      const html = await (await request.get(path)).text();
+      const preview = await page.evaluate((markup) => {
+        const head = new DOMParser().parseFromString(markup, 'text/html').head;
+        const tags: Record<string, string> = {};
+        for (const meta of head.querySelectorAll('meta')) {
+          const key = meta.getAttribute('property') ?? meta.getAttribute('name');
+          const content = meta.getAttribute('content');
+          if (key && content) tags[key] = content;
+        }
+        return { tags, imageCount: head.querySelectorAll('meta[property="og:image"]').length };
+      }, html);
+      expect(preview.imageCount).toBe(1);
+      expect(preview.tags).toMatchObject({
+        'og:type': 'website',
+        'og:site_name': 'TVR Works',
+        'og:title': title,
+        'og:description': expect.any(String),
+        'og:url': `https://tvr.works${path}`,
+        'og:image': 'https://tvr.works/social-card-v2.png',
+        'og:image:type': 'image/png',
+        'og:image:width': '1200',
+        'og:image:height': '630',
+        'og:image:alt':
+          'TVR Works — Your vision. A partner to build it. Custom software, modernization, AI & technical leadership.',
+        'twitter:card': 'summary_large_image',
+        'twitter:title': title,
+        'twitter:description': expect.any(String),
+        'twitter:image': 'https://tvr.works/social-card-v2.png',
+        'twitter:image:alt':
+          'TVR Works — Your vision. A partner to build it. Custom software, modernization, AI & technical leadership.',
+      });
+    }
     expect(await (await request.get('/robots.txt')).text()).toBe(
       publicBuild
         ? 'User-agent: *\nAllow: /\nSitemap: https://tvr.works/sitemap.xml\n'

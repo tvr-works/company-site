@@ -79,7 +79,11 @@ Ordinary local builds have `noindex, follow`, a disallowing `robots.txt`, and an
 
 Pages contain full prerendered HTML and per-route titles, descriptions, canonical URLs, Open Graph/Twitter metadata, and self-hosted sharing artwork. The homepage includes Organization, Person, WebSite, and service-catalog structured data. Each indexable page owns an authored `lastModified` date in `sitePages`. Update only the page whose content changed. Privacy renders its date from that value with an explicit UTC timezone. Dates do not change automatically on every build. No fabricated address, reviews, ratings, availability, or pricing is used.
 
-`npm run asset:social` regenerates the 1200×630 sharing card and 180px Apple touch icon from the supplied TVR monogram. The site self-hosts Geist Variable and distributes its OFL notice in `public/licenses/`. Vite emits bundled-dependency notices into `dist/client/licenses/dependencies.md`; the generated shadcn source’s MIT notice is also included. Third-party code and fonts retain their own licenses. The diagram/atmosphere are small SVG assets, not a screenshot of the concept or a canvas/WebGL renderer.
+`npm run asset:social` exports the approved artwork in `docs/design/social-card-approved.png` as the 1200×630 opaque sRGB PNG at `/social-card-v2.png`, and regenerates the 180px Apple touch icon from `public/favicon.svg`. The [approved source](docs/design/social-card-approved.png) and [built-in Image Gen prompt](docs/design/social-card-prompt.md) are retained under `docs/design/`; the export preserves this artwork.
+
+Open Graph and X metadata use the versioned image URL and matching alt text defined in `src/site-config.ts`; Open Graph also declares the image dimensions and MIME type. Delivery checks inspect the raw prerendered tags and decode the served image to verify its dimensions and format. The original `/social-card.png` remains available for previously cached links. When changing the artwork again, version its URL to distinguish the new image from cached previews.
+
+The site self-hosts Geist Variable and distributes its OFL notice in `public/licenses/`. Vite emits bundled-dependency notices into `dist/client/licenses/dependencies.md`; the generated shadcn source’s MIT notice is also included. Third-party code and fonts retain their own licenses. The diagram/atmosphere are small SVG assets, not a screenshot of the concept or a canvas/WebGL renderer.
 
 ## Hosting/privacy boundary
 

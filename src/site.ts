@@ -1,4 +1,10 @@
-import { resolveSiteIndexing, resolveSiteOrigin, siteIdentity, type SitePage } from './site-config';
+import {
+  resolveSiteIndexing,
+  resolveSiteOrigin,
+  siteIdentity,
+  socialCard,
+  type SitePage,
+} from './site-config';
 
 export const site = {
   ...siteIdentity,
@@ -29,19 +35,16 @@ export function pageHead(page: SitePage) {
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
       { property: 'og:url', content: url },
-      { property: 'og:image', content: `${site.origin}/social-card.png` },
-      { property: 'og:image:width', content: '1200' },
-      { property: 'og:image:height', content: '630' },
-      {
-        property: 'og:image:alt',
-        content:
-          'TVR Works — Your vision. A partner to build it. Custom software, modernization, AI, and technical direction.',
-      },
+      { property: 'og:image', content: `${site.origin}${socialCard.path}` },
+      { property: 'og:image:type', content: socialCard.type },
+      { property: 'og:image:width', content: String(socialCard.width) },
+      { property: 'og:image:height', content: String(socialCard.height) },
+      { property: 'og:image:alt', content: socialCard.alt },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
-      { name: 'twitter:image', content: `${site.origin}/social-card.png` },
-      { name: 'twitter:image:alt', content: 'TVR Works — Your vision. A partner to build it.' },
+      { name: 'twitter:image', content: `${site.origin}${socialCard.path}` },
+      { name: 'twitter:image:alt', content: socialCard.alt },
     ],
     links: [{ rel: 'canonical', href: url }],
   };
