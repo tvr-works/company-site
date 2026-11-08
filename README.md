@@ -27,7 +27,21 @@ npm run check
 npm run test:browser
 ```
 
-`check` runs Oxlint (including `@shadcn/lint` and JSX accessibility rules), route generation, TypeScript, and the indexing/identity tests. The browser suite builds the site and starts a separate static preview on port 4174. It covers Chromium and WebKit, axe scans, keyboard access, contact-link semantics, client navigation/history, no-JavaScript content, 404 status, metadata, reduced motion, normal reflow from 320–1920px, and 200% text. Install the matching Playwright Chromium/WebKit browsers if they are not already available locally.
+`check` generates the route tree, runs type-aware Oxlint, checks strict TypeScript, and runs the indexing/identity unit tests. Oxlint treats correctness, suspicious-code, and performance findings as errors, with React Hooks, JSX accessibility, import-cycle, promise, and unsafe-type checks. All six shadcn policies apply to application code. The shared UI primitive directory permits component-owned variants, structural values, and styling, as recommended by shadcn. React's automatic JSX runtime needs no React import; browser test loops intentionally run sequentially against the same page. Those exceptions are scoped in `.oxlintrc.json`. Warnings and unused lint suppressions fail checks.
+
+TypeScript also checks indexed access, optional-property semantics, switch fallthrough, return paths, side-effect imports, and filename casing. Vite client environment variables are explicitly typed; `.env` files stay out of Git.
+
+The browser suite builds the site and starts a separate static preview on port 4174. It covers Chromium and WebKit, axe scans, keyboard access, contact-link semantics, client navigation/history, no-JavaScript content, 404 status, metadata and crawler files, CSP script hashes, delivered security headers, Cloudflare email exemptions, reduced motion, normal reflow from 320–1920px, and 200% text. Install the matching Playwright Chromium/WebKit browsers if they are not already available locally.
+
+To verify the public artifact locally as CI does:
+
+```sh
+VITE_SITE_INDEXING=public CF_PAGES_BRANCH=main npm run test:browser -- --grep 'metadata match the indexing mode|static security headers'
+```
+
+The GitHub Actions workflow runs the unit/static checks, full preview browser suite, and public-artifact checks with Chromium and WebKit. It uses read-only repository permissions, pinned action commits, and no deployment credentials. Its npm audit step rejects high/critical advisories, including development tools. Cloudflare's Git integration builds independently; this workflow does not gate or deploy Pages by itself.
+
+The November 7 dependency audit found no production-dependency advisories. Sharp's high-severity build-tool advisory was patched in 0.35.5. Lower-severity advisories remain in shadcn's CLI dependency chain: [deepmerge prototype poisoning](https://github.com/advisories/GHSA-gcqx-w48m-w2h4) and [minimatch denial of service](https://github.com/advisories/GHSA-g3hv-75wg-m249). These tools are not served to visitors. Deepmerge has no patched release; minimatch's patch requires a major change outside ts-morph's declared range. Recheck upstream releases rather than forcing npm's proposed shadcn 1.0.0 downgrade or an unsupported transitive override.
 
 The shadcn CLI supplied `src/components/ui/button.tsx`; the two contact sizes belong to that primitive. Contact CTAs are actual anchors styled with `buttonVariants`, following Base UI’s link guidance, rather than buttons with link destinations. Keep their native link behavior.
 
