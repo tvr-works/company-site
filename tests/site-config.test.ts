@@ -3,7 +3,8 @@ import { resolveSiteIndexing, resolveSiteOrigin } from '../src/site-config';
 
 describe('public site identity and indexing', () => {
   it('keeps ordinary builds out of search results', () => {
-    for (const value of [undefined, '', 'preview']) expect(resolveSiteIndexing(value)).toBe('preview');
+    for (const value of [undefined, '', 'preview'])
+      expect(resolveSiteIndexing(value)).toBe('preview');
   });
   it('requires explicit public indexing and rejects public preview branches', () => {
     expect(resolveSiteIndexing('public')).toBe('public');
@@ -16,7 +17,13 @@ describe('public site identity and indexing', () => {
     expect(resolveSiteOrigin('https://llc.tvr.works/')).toBe('https://llc.tvr.works');
   });
   it('rejects invalid public origins before generating metadata or crawler files', () => {
-    for (const origin of ['http://tvr.works', 'https://tvr.works/work', 'https://tvr.works/?key=value', 'https://tvr.works/#home', 'https://user:password@tvr.works']) {
+    for (const origin of [
+      'http://tvr.works',
+      'https://tvr.works/work',
+      'https://tvr.works/?key=value',
+      'https://tvr.works/#home',
+      'https://user:password@tvr.works',
+    ]) {
       expect(() => resolveSiteOrigin(origin)).toThrow('VITE_SITE_ORIGIN must be an HTTPS origin');
     }
   });

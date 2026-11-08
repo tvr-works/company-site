@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "src/routeTree.gen.ts",
+    "package-lock.json",
+    "public/**",
+    "docs/design/**",
+    "docs/archive/**"
+  ]
+}

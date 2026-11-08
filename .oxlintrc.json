@@ -11,9 +11,7 @@
     "promise",
     "vitest"
   ],
-  "jsPlugins": [
-    "@shadcn/lint"
-  ],
+  "jsPlugins": ["@shadcn/lint"],
   "options": {
     "typeAware": true
   },
@@ -28,9 +26,7 @@
     "shadcn/no-restyle": [
       "error",
       {
-        "allow": [
-          "layout"
-        ]
+        "allow": ["layout"]
       }
     ],
     "shadcn/no-unknown-classes": "error",
@@ -51,9 +47,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "src/components/ui/**"
-      ],
+      "files": ["src/components/ui/**"],
       "rules": {
         "shadcn/no-restyle": "off",
         "shadcn/no-arbitrary-values": "off",
@@ -61,9 +55,7 @@
       }
     },
     {
-      "files": [
-        "tests/**/*.spec.ts"
-      ],
+      "files": ["tests/**/*.spec.ts"],
       "rules": {
         "eslint/no-await-in-loop": "off"
       }

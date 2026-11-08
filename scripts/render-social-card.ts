@@ -17,6 +17,13 @@ const social = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630
 <g fill="none" stroke="#4be1f0" opacity=".18"><circle cx="1010" cy="310" r="200"/><path d="M1010 80v460M780 310h420M868 168l284 284M868 452l284-284"/></g>
 </svg>`;
 await writeFile(new URL('../public/social-card.svg', import.meta.url), social);
-await sharp(Buffer.from(social)).png().toFile(new URL('../public/social-card.png', import.meta.url).pathname);
-await sharp(new URL('../public/favicon.svg', import.meta.url).pathname).resize(180, 180).png().toFile(new URL('../public/apple-touch-icon.png', import.meta.url).pathname);
-console.log('Generated social-card.png, social-card.svg, and apple-touch-icon.png from the original mark.');
+await sharp(Buffer.from(social))
+  .png()
+  .toFile(new URL('../public/social-card.png', import.meta.url).pathname);
+await sharp(new URL('../public/favicon.svg', import.meta.url).pathname)
+  .resize(180, 180)
+  .png()
+  .toFile(new URL('../public/apple-touch-icon.png', import.meta.url).pathname);
+console.log(
+  'Generated social-card.png, social-card.svg, and apple-touch-icon.png from the original mark.',
+);

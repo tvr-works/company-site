@@ -20,16 +20,16 @@ The apex record (`30e440d14779cc4ef176d45fcaf90843`) is now a proxied CNAME to `
 
 ## Build settings
 
-| Setting | Value |
-| --- | --- |
-| Production branch | `main` |
-| Build command | `npm run build` |
-| Output directory | `dist/client` |
-| Root directory | Repository root |
-| Production `VITE_SITE_ORIGIN` | `https://tvr.works` |
-| Production `VITE_SITE_INDEXING` | `public` |
-| Preview `VITE_SITE_ORIGIN` | `https://tvr.works` |
-| Preview `VITE_SITE_INDEXING` | `preview` |
+| Setting                         | Value               |
+| ------------------------------- | ------------------- |
+| Production branch               | `main`              |
+| Build command                   | `npm run build`     |
+| Output directory                | `dist/client`       |
+| Root directory                  | Repository root     |
+| Production `VITE_SITE_ORIGIN`   | `https://tvr.works` |
+| Production `VITE_SITE_INDEXING` | `public`            |
+| Preview `VITE_SITE_ORIGIN`      | `https://tvr.works` |
+| Preview `VITE_SITE_INDEXING`    | `preview`           |
 
 Pages build image v3 detected Node `26.13.0` and npm `11.20.0`, matching the local pins. [Pages supports the checked-in runtime pin](https://developers.cloudflare.com/pages/configuration/build-image/). The build prerendered three pages, uploaded 22 static files from `dist/client`, parsed the security headers, and deployed no Functions or runtime server.
 

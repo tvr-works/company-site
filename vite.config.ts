@@ -17,8 +17,18 @@ export default defineConfig(({ mode }) => {
     plugins: [
       tailwindcss(),
       tanstackStart({
-        prerender: { enabled: true, autoStaticPathsDiscovery: false, autoSubfolderIndex: false, crawlLinks: false, failOnError: true },
-        pages: [{ path: '/' }, { path: '/privacy' }, { path: '/404', prerender: { outputPath: '/404.html' } }],
+        prerender: {
+          enabled: true,
+          autoStaticPathsDiscovery: false,
+          autoSubfolderIndex: false,
+          crawlLinks: false,
+          failOnError: true,
+        },
+        pages: [
+          { path: '/' },
+          { path: '/privacy' },
+          { path: '/404', prerender: { outputPath: '/404.html' } },
+        ],
       }),
       react(),
     ],

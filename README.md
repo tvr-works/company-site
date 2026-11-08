@@ -47,18 +47,18 @@ The shadcn CLI supplied `src/components/ui/button.tsx`; the two contact sizes be
 
 ## Editing
 
-| Concern | Source |
-| --- | --- |
-| Homepage and biography | `src/components/HomePage.tsx` |
-| Service labels and semantic diagram content | `src/components/Partnership.tsx` |
-| Contact address, LinkedIn, metadata, structured data | `src/site.ts` |
-| Theme, typography, layout, responsive rules | `src/styles.css` |
-| Diagram and atmosphere | `public/assets/*.svg` |
-| Original brand mark | `public/logo.svg` |
-| Privacy | `src/components/PrivacyPage.tsx` |
-| Site indexing and canonical origin validation | `src/site-config.ts` |
-| Static artifact/crawler files/security headers | `scripts/finalize-static.ts` |
-| Sharing image and touch icon | `scripts/render-social-card.ts` |
+| Concern                                              | Source                           |
+| ---------------------------------------------------- | -------------------------------- |
+| Homepage and biography                               | `src/components/HomePage.tsx`    |
+| Service labels and semantic diagram content          | `src/components/Partnership.tsx` |
+| Contact address, LinkedIn, metadata, structured data | `src/site.ts`                    |
+| Theme, typography, layout, responsive rules          | `src/styles.css`                 |
+| Diagram and atmosphere                               | `public/assets/*.svg`            |
+| Original brand mark                                  | `public/logo.svg`                |
+| Privacy                                              | `src/components/PrivacyPage.tsx` |
+| Site indexing and canonical origin validation        | `src/site-config.ts`             |
+| Static artifact/crawler files/security headers       | `scripts/finalize-static.ts`     |
+| Sharing image and touch icon                         | `scripts/render-social-card.ts`  |
 
 The diagram’s labels are real HTML in one consistent reading order. Its SVG contains only decorative geometry and is hidden from assistive technology. Font-relative container queries let the diagram reflow into a service list on smaller screens and when visitors enlarge text. Shared LinkedIn and email controls appear in the header and footer; Privacy sits beside the copyright. The footer groups stack on mobile, and email links leave subject and body blank. The closing narrative includes Tim's 20 years of experience and is framed by matching subtle rules. Theme and content remain owned by this site; no shared package or monorepo migration has been introduced.
 

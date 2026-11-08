@@ -18,7 +18,15 @@ export function pageHead(path: string, title: string, description: string) {
     meta: [
       { title },
       { name: 'description', content: description },
-      { name: 'robots', content: path === '/404' ? 'noindex, nofollow' : site.indexing === 'public' ? 'index, follow' : 'noindex, follow' },
+      {
+        name: 'robots',
+        content:
+          path === '/404'
+            ? 'noindex, nofollow'
+            : site.indexing === 'public'
+              ? 'index, follow'
+              : 'noindex, follow',
+      },
       { property: 'og:type', content: 'website' },
       { property: 'og:site_name', content: site.name },
       { property: 'og:locale', content: 'en_US' },
@@ -28,7 +36,11 @@ export function pageHead(path: string, title: string, description: string) {
       { property: 'og:image', content: `${site.origin}/social-card.png` },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
-      { property: 'og:image:alt', content: 'TVR Works — Your vision. A partner to build it. Custom software, modernization, AI, and technical direction.' },
+      {
+        property: 'og:image:alt',
+        content:
+          'TVR Works — Your vision. A partner to build it. Custom software, modernization, AI, and technical direction.',
+      },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
@@ -43,18 +55,48 @@ export const organizationData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'Organization', '@id': `${site.origin}/#organization`, name: site.name, legalName: site.legalName,
-      url: `${site.origin}/`, logo: `${site.origin}/logo.svg`, email: site.email,
+      '@type': 'Organization',
+      '@id': `${site.origin}/#organization`,
+      name: site.name,
+      legalName: site.legalName,
+      url: `${site.origin}/`,
+      logo: `${site.origin}/logo.svg`,
+      email: site.email,
       founder: { '@id': `${site.origin}/#tim` },
-      description: 'Independent software engineering for founders and established businesses: custom applications, modernization, applied AI, and fractional technical leadership.',
+      description:
+        'Independent software engineering for founders and established businesses: custom applications, modernization, applied AI, and fractional technical leadership.',
       hasOfferCatalog: {
-        '@type': 'OfferCatalog', name: 'Engineering and advisory services',
-        itemListElement: ['Custom applications and solutions', 'Software modernization', 'Applied AI and automation', 'Fractional technical leadership and architecture advice'].map(name => ({
-          '@type': 'Offer', itemOffered: { '@type': 'Service', name, provider: { '@id': `${site.origin}/#organization` } },
+        '@type': 'OfferCatalog',
+        name: 'Engineering and advisory services',
+        itemListElement: [
+          'Custom applications and solutions',
+          'Software modernization',
+          'Applied AI and automation',
+          'Fractional technical leadership and architecture advice',
+        ].map((name) => ({
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name,
+            provider: { '@id': `${site.origin}/#organization` },
+          },
         })),
       },
     },
-    { '@type': 'Person', '@id': `${site.origin}/#tim`, name: 'Tim VanReenen', jobTitle: 'Software engineer and architect', sameAs: [site.linkedin] },
-    { '@type': 'WebSite', '@id': `${site.origin}/#website`, name: site.name, url: `${site.origin}/`, publisher: { '@id': `${site.origin}/#organization` }, inLanguage: 'en' },
+    {
+      '@type': 'Person',
+      '@id': `${site.origin}/#tim`,
+      name: 'Tim VanReenen',
+      jobTitle: 'Software engineer and architect',
+      sameAs: [site.linkedin],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site.origin}/#website`,
+      name: site.name,
+      url: `${site.origin}/`,
+      publisher: { '@id': `${site.origin}/#organization` },
+      inLanguage: 'en',
+    },
   ],
 };
