@@ -1,5 +1,6 @@
+import { createHash } from 'node:crypto';
 import { expect, test } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { AxeBuilder } from '@axe-core/playwright';
 
 test('home, privacy, and missing pages have readable static content without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
@@ -90,16 +91,55 @@ for (const route of ['/', '/privacy', '/missing-page']) {
   });
 }
 
-test('search and sharing metadata are complete while local indexing stays disabled', async ({ page, request }) => {
+test('search and sharing metadata match the indexing mode', async ({ page, request }) => {
   await page.goto('/');
   await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /custom applications/i);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+  const publicBuild = process.env.VITE_SITE_INDEXING === 'public';
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', publicBuild ? 'index, follow' : 'noindex, follow');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://tvr.works/');
-  const graph = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
-  expect(graph['@graph'].map((entry: { '@type': string }) => entry['@type'])).toEqual(['Organization', 'Person', 'WebSite']);
+  const graph: unknown = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
+  expect(graph).toMatchObject({ '@graph': [
+    { '@type': 'Organization' }, { '@type': 'Person' }, { '@type': 'WebSite' },
+  ] });
   const image = await request.get('/social-card.png');
   expect(image.ok()).toBe(true);
   expect(image.headers()['content-type']).toContain('image/png');
-  expect(await (await request.get('/robots.txt')).text()).toBe('User-agent: *\nDisallow: /\n');
-  expect(await (await request.get('/sitemap.xml')).text()).not.toContain('<url>');
+  expect(await (await request.get('/robots.txt')).text()).toBe(publicBuild
+    ? 'User-agent: *\nAllow: /\nSitemap: https://tvr.works/sitemap.xml\n'
+    : 'User-agent: *\nDisallow: /\n');
+  const sitemap = await (await request.get('/sitemap.xml')).text();
+  if (publicBuild) {
+    expect(sitemap.match(/<loc>[^<]+<\/loc>/g)).toEqual([
+      '<loc>https://tvr.works/</loc>', '<loc>https://tvr.works/privacy</loc>',
+    ]);
+  } else expect(sitemap).not.toContain('<url>');
+  await page.goto('/privacy');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', publicBuild ? 'index, follow' : 'noindex, follow');
+  await page.goto('/missing-page');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
 });
+
+for (const path of ['/', '/privacy', '/missing-page']) {
+  test(`static security headers and contact links survive delivery of ${path}`, async ({ request }) => {
+    const response = await request.get(path);
+    const headers = response.headers();
+    const csp = headers['content-security-policy'];
+    expect(csp).toBeDefined();
+    expect(csp).not.toMatch(/unsafe-inline|unsafe-eval/);
+    for (const directive of ["default-src 'self'", "object-src 'none'", "base-uri 'none'", "frame-ancestors 'none'", "form-action 'none'"]) {
+      expect(csp).toContain(directive);
+    }
+    expect(headers['x-content-type-options']).toBe('nosniff');
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
+    expect(headers['permissions-policy']).toBe('camera=(), microphone=(), geolocation=()');
+    const html = await response.text();
+    for (const [, attributes = '', content = ''] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
+      if (!/\bsrc=/.test(attributes) && content) {
+        expect(csp).toContain(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
+      }
+    }
+    const mailtoCount = [...html.matchAll(/href="mailto:tim@tvr\.works"/g)].length;
+    expect(mailtoCount).toBeGreaterThan(0);
+    expect([...html.matchAll(/<!--email_off--><a\b[^>]*href="mailto:tim@tvr\.works"[^>]*>[\s\S]*?<\/a><!--\/email_off-->/g)]).toHaveLength(mailtoCount);
+  });
+}

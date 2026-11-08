@@ -16,7 +16,7 @@ export default defineConfig({
         const headers = readFileSync(resolve(directory, '_headers'), 'utf8');
         for (const line of headers.split('\n')) {
           const match = /^  ([\w-]+): (.+)$/.exec(line);
-          if (match) response.setHeader(match[1], match[2]);
+          if (match?.[1] && match[2]) response.setHeader(match[1], match[2]);
         }
         next();
       });

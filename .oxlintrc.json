@@ -1,16 +1,81 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["eslint", "typescript", "unicorn", "oxc", "react", "jsx-a11y"],
-  "jsPlugins": ["@shadcn/lint"],
-  "categories": { "correctness": "error" },
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "react",
+    "jsx-a11y",
+    "import",
+    "promise",
+    "vitest"
+  ],
+  "jsPlugins": [
+    "@shadcn/lint"
+  ],
+  "options": {
+    "typeAware": true
+  },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error"
+  },
   "rules": {
     "react/rules-of-hooks": "error",
     "react/exhaustive-deps": "error",
-    "shadcn/no-restyle": ["error", { "allow": ["layout"] }],
+    "shadcn/no-restyle": [
+      "error",
+      {
+        "allow": [
+          "layout"
+        ]
+      }
+    ],
     "shadcn/no-unknown-classes": "error",
     "shadcn/no-raw-colors": "error",
-    "shadcn/no-inline-styles": "error"
+    "shadcn/no-inline-styles": "error",
+    "shadcn/no-arbitrary-values": "error",
+    "shadcn/require-static-classes": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/no-misused-promises": "error",
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    "react/react-in-jsx-scope": "off"
   },
-  "overrides": [{ "files": ["src/components/ui/**"], "rules": { "shadcn/no-restyle": "off" } }],
-  "ignorePatterns": ["dist/**", ".cache/**", ".tanstack/**", "src/routeTree.gen.ts", "test-results/**", "playwright-report/**", "output/**"]
+  "overrides": [
+    {
+      "files": [
+        "src/components/ui/**"
+      ],
+      "rules": {
+        "shadcn/no-restyle": "off",
+        "shadcn/no-arbitrary-values": "off",
+        "shadcn/require-static-classes": "off"
+      }
+    },
+    {
+      "files": [
+        "tests/**/*.spec.ts"
+      ],
+      "rules": {
+        "eslint/no-await-in-loop": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "dist/**",
+    ".cache/**",
+    ".tanstack/**",
+    "src/routeTree.gen.ts",
+    "test-results/**",
+    "playwright-report/**",
+    "output/**"
+  ]
 }

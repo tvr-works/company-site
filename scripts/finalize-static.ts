@@ -7,8 +7,7 @@ const environment = loadEnv('production', process.cwd(), 'VITE_SITE_');
 const origin = resolveSiteOrigin(environment.VITE_SITE_ORIGIN);
 const publicBuild = resolveSiteIndexing(environment.VITE_SITE_INDEXING, process.env.CF_PAGES_BRANCH) === 'public';
 const directory = new URL('../dist/client/', import.meta.url);
-const hashes = new Set<string>();
-for (const file of ['index.html', 'privacy.html', '404.html']) {
+const pages = await Promise.all(['index.html', 'privacy.html', '404.html'].map(async file => {
   // Preserve native contact links when Cloudflare processes the prerendered HTML.
   // Keep the exemption in the delivery artifact so React owns its normal markup.
   const html = (await readFile(new URL(file, directory), 'utf8')).replace(
@@ -17,8 +16,13 @@ for (const file of ['index.html', 'privacy.html', '404.html']) {
   );
   if (!html.includes('<h1') || !html.includes('TVR Works')) throw new Error(`Missing prerendered content in ${file}`);
   await writeFile(new URL(file, directory), html);
+  return html;
+}));
+const hashes = new Set<string>();
+for (const html of pages) {
   for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
-    if (!/\bsrc=/.test(match[1]) && match[2]) hashes.add(`'sha256-${createHash('sha256').update(match[2]).digest('base64')}'`);
+    const [, attributes = '', content = ''] = match;
+    if (!/\bsrc=/.test(attributes) && content) hashes.add(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
   }
 }
 const csp = [
