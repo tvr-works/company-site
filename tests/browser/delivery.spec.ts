@@ -63,7 +63,7 @@ test(
         '<loc>https://tvr.works/privacy</loc>',
       ]);
       expect(sitemap.match(/<lastmod>[^<]+<\/lastmod>/g)).toEqual([
-        '<lastmod>2026-11-07</lastmod>',
+        '<lastmod>2026-11-08</lastmod>',
         '<lastmod>2026-11-07</lastmod>',
       ]);
     } else expect(sitemap).not.toContain('<url>');

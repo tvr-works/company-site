@@ -12,8 +12,8 @@ export function HomePage() {
           <span>A partner to build it.</span>
         </h1>
         <p>
-          Turn a new idea into working software. Reimagine an existing system. Work directly with an
-          engineer who brings product perspective and technical depth.
+          Turn a new idea into working software, or rebuild a system your business depends on. Work
+          with one experienced partner from the first decisions through delivery.
         </p>
         <ContactLink />
       </section>
@@ -31,13 +31,12 @@ export function HomePage() {
             design, product management, and technical leadership.
           </p>
           <p>
-            Whether you’re a founder with a new idea or a business owner who needs a new or better
-            system, I can help you design it, build it, and keep it running.
+            I help founders bring new products to life and small and midsize businesses build and
+            modernize the systems they rely on.
           </p>
           <p>
-            I take the time to understand your business, help you weigh the options, and take
-            responsibility for the engineering. You’ll work directly with me on your own project or
-            one you’re delivering for a client.
+            I take the time to understand your business and work through the decisions with you. You
+            get one partner to design the system, build the software, and keep it running.
           </p>
         </div>
       </section>

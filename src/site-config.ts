@@ -16,7 +16,7 @@ export const sitePages = {
     title: 'TVR Works — Custom Software, Applied AI & Technical Leadership',
     description:
       'Custom applications for founders and established businesses. Work directly with Tim VanReenen on software modernization, applied AI, and fractional technical leadership.',
-    lastModified: '2026-11-07',
+    lastModified: '2026-11-08',
     indexable: true,
   },
   privacy: {
