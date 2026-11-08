@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { loadEnv } from 'vite';
-import { resolveSiteIndexing, resolveSiteOrigin } from '../src/site-config.ts';
+import { resolveSiteIndexing, resolveSiteOrigin, sitePages } from '../src/site-config.ts';
 
 const environment = loadEnv('production', process.cwd(), 'VITE_SITE_');
 const origin = resolveSiteOrigin(environment.VITE_SITE_ORIGIN);
@@ -9,7 +9,7 @@ const publicBuild =
   resolveSiteIndexing(environment.VITE_SITE_INDEXING, process.env.CF_PAGES_BRANCH) === 'public';
 const directory = new URL('../dist/client/', import.meta.url);
 const pages = await Promise.all(
-  ['index.html', 'privacy.html', '404.html'].map(async (file) => {
+  Object.values(sitePages).map(async ({ outputFile: file }) => {
     // Preserve native contact links when Cloudflare processes the prerendered HTML.
     // Keep the exemption in the delivery artifact so React owns its normal markup.
     const html = (await readFile(new URL(file, directory), 'utf8')).replace(
@@ -53,8 +53,12 @@ await writeFile(
     : 'User-agent: *\nDisallow: /\n',
 );
 const urls = publicBuild
-  ? ['/', '/privacy']
-      .map((path) => `<url><loc>${origin}${path}</loc><lastmod>2026-11-07</lastmod></url>`)
+  ? Object.values(sitePages)
+      .filter((page) => page.indexable)
+      .map(
+        (page) =>
+          `<url><loc>${origin}${page.path}</loc><lastmod>${page.lastModified}</lastmod></url>`,
+      )
       .join('')
   : '';
 await writeFile(

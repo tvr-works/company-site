@@ -1,18 +1,15 @@
-import { resolveSiteIndexing, resolveSiteOrigin } from './site-config';
+import { resolveSiteIndexing, resolveSiteOrigin, siteIdentity, type SitePage } from './site-config';
 
 export const site = {
-  name: 'TVR Works',
-  legalName: 'TVR Works LLC',
+  ...siteIdentity,
   origin: resolveSiteOrigin(import.meta.env.VITE_SITE_ORIGIN),
-  email: 'tim@tvr.works',
-  linkedin: 'https://www.linkedin.com/in/tvanreenen/',
   indexing: resolveSiteIndexing(import.meta.env.VITE_SITE_INDEXING),
-  updated: '2026-11-07',
 };
 
 export const contactHref = `mailto:${site.email}`;
 
-export function pageHead(path: string, title: string, description: string) {
+export function pageHead(page: SitePage) {
+  const { path, title, description } = page;
   const url = `${site.origin}${path}`;
   return {
     meta: [
@@ -20,12 +17,11 @@ export function pageHead(path: string, title: string, description: string) {
       { name: 'description', content: description },
       {
         name: 'robots',
-        content:
-          path === '/404'
-            ? 'noindex, nofollow'
-            : site.indexing === 'public'
-              ? 'index, follow'
-              : 'noindex, follow',
+        content: !page.indexable
+          ? 'noindex, nofollow'
+          : site.indexing === 'public'
+            ? 'index, follow'
+            : 'noindex, follow',
       },
       { property: 'og:type', content: 'website' },
       { property: 'og:site_name', content: site.name },

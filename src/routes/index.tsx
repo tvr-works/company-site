@@ -1,14 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { sitePages } from '../site-config';
 import { HomePage } from '../components/HomePage';
 import { organizationData, pageHead } from '../site';
 
 export const Route = createFileRoute('/')({
   head: () => ({
-    ...pageHead(
-      '/',
-      'TVR Works — Custom Software, Applied AI & Technical Leadership',
-      'Custom applications for founders and established businesses. Work directly with Tim VanReenen on software modernization, applied AI, and fractional technical leadership.',
-    ),
+    ...pageHead(sitePages.home),
     scripts: [
       {
         type: 'application/ld+json',

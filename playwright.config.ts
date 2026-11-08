@@ -1,11 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const port = 4174;
+const baseURL = `http://127.0.0.1:${port}`;
+
 export default defineConfig({
-  testDir: './tests',
+  testDir: './tests/browser',
   testMatch: '**/*.spec.ts',
   fullyParallel: true,
   workers: 2,
-  use: { baseURL: 'http://127.0.0.1:4174', reducedMotion: 'reduce', trace: 'retain-on-failure' },
+  use: { baseURL, reducedMotion: 'reduce', trace: 'retain-on-failure' },
   projects: [
     {
       name: 'chromium',
@@ -17,8 +20,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && npm run preview -- --port 4174 --strictPort',
-    url: 'http://127.0.0.1:4174',
+    command: `npm run build && npm run preview -- --port ${port} --strictPort`,
+    url: baseURL,
     reuseExistingServer: false,
   },
 });

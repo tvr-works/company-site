@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveSiteIndexing, resolveSiteOrigin } from '../src/site-config';
+import { resolveSiteIndexing, resolveSiteOrigin } from '../../src/site-config';
 
 describe('public site identity and indexing', () => {
   it('keeps ordinary builds out of search results', () => {

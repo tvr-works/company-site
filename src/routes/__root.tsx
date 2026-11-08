@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router';
 import { NotFoundPage } from '../components/NotFoundPage';
 import styles from '../styles.css?url';
+import { sitePages } from '../site-config';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -26,7 +27,9 @@ export const Route = createRootRoute({
 });
 
 function RootDocument() {
-  const staticNotFound = useRouterState({ select: (state) => state.location.pathname === '/404' });
+  const staticNotFound = useRouterState({
+    select: (state) => state.location.pathname === sitePages.notFound.path,
+  });
   return (
     <html lang="en">
       <head>

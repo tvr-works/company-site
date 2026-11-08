@@ -34,7 +34,7 @@ jobs:
       - run: npx --no-install playwright install --with-deps chromium webkit
       - run: npm run test:browser
       - name: Verify public indexing artifact
-        run: npm run test:browser -- --grep 'metadata match the indexing mode|static security headers'
+        run: npm run test:artifact
         env:
           VITE_SITE_INDEXING: public
           CF_PAGES_BRANCH: main

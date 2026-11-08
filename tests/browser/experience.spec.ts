@@ -1,29 +1,9 @@
-import { createHash } from 'node:crypto';
 import { expect, test } from '@playwright/test';
 import { AxeBuilder } from '@axe-core/playwright';
 
-test('home, privacy, and missing pages have readable static content without JavaScript', async ({
-  browser,
-}) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
-  const page = await context.newPage();
-  for (const [path, heading, status] of [
-    ['/', 'Your vision. A partner to build it.', 200],
-    ['/privacy', 'Privacy', 200],
-    ['/this-page-does-not-exist', 'Let’s get you back on track.', 404],
-  ] as const) {
-    const response = await page.goto(`http://127.0.0.1:4174${path}`);
-    expect(response?.status()).toBe(status);
-    await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: 'Let’s talk — email Tim about your project' }).first(),
-    ).toHaveAttribute('href', 'mailto:tim@tvr.works');
-  }
-  await context.close();
-});
-
 test('privacy navigation and browser history preserve real pages and metadata', async ({
   page,
+  baseURL,
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -42,7 +22,7 @@ test('privacy navigation and browser history preserve real pages and metadata', 
     'https://tvr.works/privacy',
   );
   await page.getByRole('link', { name: 'Back to TVR Works' }).click();
-  await expect(page).toHaveURL('http://127.0.0.1:4174/');
+  await expect(page).toHaveURL(new URL('/', baseURL).href);
   await page.goBack();
   await expect(page.getByRole('heading', { level: 1, name: 'Privacy', exact: true })).toBeVisible();
   expect(errors).toEqual([]);
@@ -130,86 +110,5 @@ for (const route of ['/', '/privacy', '/missing-page']) {
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'best-practice'])
       .analyze();
     expect(result.violations).toEqual([]);
-  });
-}
-
-test('search and sharing metadata match the indexing mode', async ({ page, request }) => {
-  await page.goto('/');
-  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
-    'content',
-    /custom applications/i,
-  );
-  const publicBuild = process.env.VITE_SITE_INDEXING === 'public';
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-    'content',
-    publicBuild ? 'index, follow' : 'noindex, follow',
-  );
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://tvr.works/');
-  const graph: unknown = JSON.parse(
-    await page.locator('script[type="application/ld+json"]').innerText(),
-  );
-  expect(graph).toMatchObject({
-    '@graph': [{ '@type': 'Organization' }, { '@type': 'Person' }, { '@type': 'WebSite' }],
-  });
-  const image = await request.get('/social-card.png');
-  expect(image.ok()).toBe(true);
-  expect(image.headers()['content-type']).toContain('image/png');
-  expect(await (await request.get('/robots.txt')).text()).toBe(
-    publicBuild
-      ? 'User-agent: *\nAllow: /\nSitemap: https://tvr.works/sitemap.xml\n'
-      : 'User-agent: *\nDisallow: /\n',
-  );
-  const sitemap = await (await request.get('/sitemap.xml')).text();
-  if (publicBuild) {
-    expect(sitemap.match(/<loc>[^<]+<\/loc>/g)).toEqual([
-      '<loc>https://tvr.works/</loc>',
-      '<loc>https://tvr.works/privacy</loc>',
-    ]);
-  } else expect(sitemap).not.toContain('<url>');
-  await page.goto('/privacy');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-    'content',
-    publicBuild ? 'index, follow' : 'noindex, follow',
-  );
-  await page.goto('/missing-page');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-});
-
-for (const path of ['/', '/privacy', '/missing-page']) {
-  test(`static security headers and contact links survive delivery of ${path}`, async ({
-    request,
-  }) => {
-    const response = await request.get(path);
-    const headers = response.headers();
-    const csp = headers['content-security-policy'];
-    expect(csp).toBeDefined();
-    expect(csp).not.toMatch(/unsafe-inline|unsafe-eval/);
-    for (const directive of [
-      "default-src 'self'",
-      "object-src 'none'",
-      "base-uri 'none'",
-      "frame-ancestors 'none'",
-      "form-action 'none'",
-    ]) {
-      expect(csp).toContain(directive);
-    }
-    expect(headers['x-content-type-options']).toBe('nosniff');
-    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
-    expect(headers['permissions-policy']).toBe('camera=(), microphone=(), geolocation=()');
-    const html = await response.text();
-    for (const [, attributes = '', content = ''] of html.matchAll(
-      /<script\b([^>]*)>([\s\S]*?)<\/script>/g,
-    )) {
-      if (!/\bsrc=/.test(attributes) && content) {
-        expect(csp).toContain(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
-      }
-    }
-    const mailtoCount = [...html.matchAll(/href="mailto:tim@tvr\.works"/g)].length;
-    expect(mailtoCount).toBeGreaterThan(0);
-    expect([
-      ...html.matchAll(
-        /<!--email_off--><a\b[^>]*href="mailto:tim@tvr\.works"[^>]*>[\s\S]*?<\/a><!--\/email_off-->/g,
-      ),
-    ]).toHaveLength(mailtoCount);
   });
 }
