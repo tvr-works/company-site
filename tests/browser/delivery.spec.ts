@@ -30,6 +30,22 @@ test(
   { tag: '@artifact' },
   async ({ page, request }) => {
     await page.goto('/');
+    await page.evaluate(() => document.fonts.ready);
+    const preload = page.locator('link[rel="preload"][as="font"]');
+    await expect(preload).toHaveCount(1);
+    await expect(preload).toHaveAttribute('crossorigin', 'anonymous');
+    await expect(preload).toHaveAttribute('type', 'font/woff2');
+    const fontPath = await preload.getAttribute('href');
+    if (!fontPath) throw new Error('Font preload has no URL');
+    expect(
+      await page.evaluate(() =>
+        performance
+          .getEntriesByType('resource')
+          .filter((entry) => /\.woff2(?:\?|$)/.test(entry.name))
+          .map((entry) => entry.name),
+      ),
+    ).toEqual([new URL(fontPath, page.url()).href]);
+
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(
       'content',
       /custom applications/i,
@@ -43,11 +59,14 @@ test(
       'href',
       'https://tvr.works/',
     );
-    const graph: unknown = JSON.parse(
-      await page.locator('script[type="application/ld+json"]').innerText(),
-    );
-    expect(graph).toMatchObject({
-      '@graph': [{ '@type': 'Organization' }, { '@type': 'Person' }, { '@type': 'WebSite' }],
+    const logo = await request.get('/brand-logo.png');
+    expect(logo.ok()).toBe(true);
+    expect(logo.headers()['content-type']).toContain('image/png');
+    expect(await sharp(await logo.body()).metadata()).toMatchObject({
+      width: 512,
+      height: 512,
+      format: 'png',
+      hasAlpha: false,
     });
     const image = await request.get('/social-card-v2.png');
     expect(image.ok()).toBe(true);
@@ -71,9 +90,34 @@ test(
           const content = meta.getAttribute('content');
           if (key && content) tags[key] = content;
         }
-        return { tags, imageCount: head.querySelectorAll('meta[property="og:image"]').length };
+        return {
+          tags,
+          jsonld: head.querySelector('script[type="application/ld+json"]')?.textContent,
+          imageCount: head.querySelectorAll('meta[property="og:image"]').length,
+        };
       }, html);
       expect(preview.imageCount).toBe(1);
+      if (path === '/') {
+        const graph: unknown = JSON.parse(preview.jsonld ?? 'null');
+        expect(graph).toMatchObject({
+          '@graph': [
+            {
+              '@type': 'Organization',
+              '@id': 'https://tvr.works/#organization',
+              sameAs: ['https://github.com/tvr-works'],
+              founder: { '@id': 'https://tvr.works/#tim' },
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://tvr.works/brand-logo.png',
+                width: 512,
+                height: 512,
+              },
+            },
+            { '@type': 'Person', worksFor: { '@id': 'https://tvr.works/#organization' } },
+            { '@type': 'WebSite' },
+          ],
+        });
+      }
       expect(preview.tags).toMatchObject({
         'og:type': 'website',
         'og:site_name': 'TVR Works',

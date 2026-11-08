@@ -1,4 +1,5 @@
 import {
+  brandLogo,
   resolveSiteIndexing,
   resolveSiteOrigin,
   siteIdentity,
@@ -59,8 +60,14 @@ export const organizationData = {
       name: site.name,
       legalName: site.legalName,
       url: `${site.origin}/`,
-      logo: `${site.origin}/logo.svg`,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${site.origin}${brandLogo.path}`,
+        width: brandLogo.width,
+        height: brandLogo.height,
+      },
       email: site.email,
+      sameAs: [site.githubOrganization],
       founder: { '@id': `${site.origin}/#tim` },
       description:
         'Independent software engineering for founders and established businesses: custom applications, modernization, applied AI, and fractional technical leadership.',
@@ -87,6 +94,7 @@ export const organizationData = {
       '@id': `${site.origin}/#tim`,
       name: 'Tim VanReenen',
       jobTitle: 'Software engineer and architect',
+      worksFor: { '@id': `${site.origin}/#organization` },
       sameAs: [site.linkedin],
     },
     {

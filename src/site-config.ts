@@ -7,6 +7,13 @@ export const siteIdentity = {
   origin: 'https://tvr.works',
   email: 'tim@tvr.works',
   linkedin: 'https://www.linkedin.com/in/tvanreenen/',
+  githubOrganization: 'https://github.com/tvr-works',
+} as const;
+
+export const brandLogo = {
+  path: '/brand-logo.png',
+  width: 512,
+  height: 512,
 } as const;
 
 export const socialCard = {

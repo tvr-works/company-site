@@ -7,7 +7,8 @@ import { resolve, sep } from 'node:path';
 export default defineConfig({
   appType: 'mpa',
   build: { outDir: 'dist/client' },
-  preview: { host: '127.0.0.1' },
+  // Match same-origin static delivery; Vary: Origin causes duplicate WebKit font fetches.
+  preview: { host: '127.0.0.1', cors: false },
   plugins: [
     {
       name: 'static-pages-preview',

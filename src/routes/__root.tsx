@@ -8,6 +8,7 @@ import {
 import { NotFoundPage } from '../components/NotFoundPage';
 import styles from '../styles.css?url';
 import { sitePages } from '../site-config';
+import geistFont from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -17,6 +18,7 @@ export const Route = createRootRoute({
       { name: 'theme-color', content: '#080f16' },
     ],
     links: [
+      { rel: 'preload', href: geistFont, as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
       { rel: 'stylesheet', href: styles },
       { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
