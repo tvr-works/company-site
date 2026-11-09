@@ -2,7 +2,7 @@ name: Site checks
 
 on:
   push:
-    branches: [main]
+    branches: ['**']
   pull_request:
   workflow_dispatch:
 
@@ -11,8 +11,7 @@ permissions:
 
 concurrency:
   group: site-checks-${{ github.workflow }}-${{ github.ref }}
-  # Cancel superseded PR checks, but let an active production release finish.
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -52,7 +51,7 @@ jobs:
         run: npm run test:artifact
         env:
           VITE_SITE_INDEXING: public
-          CF_PAGES_BRANCH: production
+          CF_PAGES_BRANCH: main
           PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/public
       - name: Save tested production artifact
         if: github.event_name != 'pull_request'
@@ -73,25 +72,3 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 7
-
-  promote:
-    needs: validate
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    timeout-minutes: 5
-    permissions:
-      contents: write
-    environment:
-      name: production
-      url: https://tvr.works
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
-        with:
-          node-version-file: .node-version
-      - name: Promote validated main commit
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node scripts/promote-production.ts

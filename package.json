@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "ci:gate": "node scripts/wait-for-ci.ts",
     "build": "npm run lint && vite build && tsc --noEmit && node --import tsx scripts/finalize-static.ts && npm run check:budget",
     "preview": "vite preview --config vite.preview.config.ts",
     "routes": "node --import tsx scripts/generate-routes.ts",
