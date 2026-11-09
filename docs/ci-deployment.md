@@ -14,6 +14,8 @@ Validation includes formatting, typed shadcn/Oxlint, TypeScript, unit tests, hig
 
 After the public-artifact checks pass, the validation job uploads only `dist/client`. The deployment job downloads that immutable artifact by the ID emitted by validation. It does not rebuild the site. This also allows a failed deployment job to be retried while its artifact is retained.
 
+Manual validation runs on migration branches also retain the tested artifact for inspection. The deployment job remains restricted to main. PR validation does not retain a deployable artifact.
+
 The deployment job uses the `production` GitHub environment, which must allow only the `main` branch. `CLOUDFLARE_API_TOKEN` belongs in that environment, not in repository-wide secrets. The token needs only Cloudflare Pages Edit on the personal account that owns `company-site`; Cloudflare scopes this permission to the account, so it can affect other Pages projects in that account. It needs no DNS, Workers, or account-administration permissions.
 
 The pinned Cloudflare deployment action uses Wrangler only to upload the prebuilt Pages artifact to the existing project. The `cf` CLI's current deployment command targets Workers; its Pages API command accepts manifests but does not upload a directory of assets. No Wrangler configuration or runtime server is introduced here.
@@ -29,6 +31,8 @@ Before changing those settings, establish the production environment credential,
 For a deployment failure after validation succeeds, fix the cause and rerun the failed deployment job within seven days. If the artifact expired or main advanced, run the entire workflow for current main instead. A content rollback should go through a revert commit and the same checks. Emergency Pages rollback is available through Cloudflare; record any manual bypass and reconcile main afterward.
 
 ## References
+
+The first migration-branch validation on November 9, 2026 passed on Blacksmith in 1 minute 13 seconds. Browser-container initialization took 17 seconds. The preceding GitHub-hosted validation took 7 minutes 36 seconds, including 6 minutes 26 seconds installing browser dependencies. These are individual observed runs, not a runtime guarantee. [Migration validation](https://github.com/tvr-works/company-site/actions/runs/42633100122).
 
 - [Playwright CI containers](https://playwright.dev/docs/ci)
 - [Playwright Docker image and version compatibility](https://playwright.dev/docs/docker)

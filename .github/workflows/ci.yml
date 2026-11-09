@@ -58,7 +58,7 @@ jobs:
           PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/public
       - name: Save tested production artifact
         id: site
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: site-${{ github.sha }}-${{ github.run_attempt }}
