@@ -52,7 +52,7 @@ Replace the deployment ID and expected SHA with the intended release. The build 
 
 The script checks the immutable deployment URL and public domain for commit identity, page statuses, actual canonical metadata, HTML and edge indexing, native contact links, security headers, robots, exact sitemap entries, and a real non-indexable 404, with three bounded attempts for edge propagation.
 
-Use `DEPLOYMENT_MODE=preview` for previews. That mode checks only the supplied origin, requires HTML and edge `noindex`, blocked robots, an empty sitemap, and preview build identity. Production mode checks the apex by default; `CHECK_PRODUCTION_ALIAS=0` verifies an immutable production build before checking its alias. Preview mode cannot opt into checking the production alias. Contract tests cover stale commits, wrong canonicals, edge indexing mistakes, leaking preview sitemaps, and soft 404s.
+Use `DEPLOYMENT_MODE=preview` for previews. That mode checks only the supplied origin, requires HTML and edge `noindex`, blocked robots, an empty sitemap, and preview build identity. Production mode requires public HTML/build identity, but immutable hash Pages hostnames must still have Cloudflare’s edge `noindex`; the custom production domain must remain indexable. Production mode checks the apex by default; `CHECK_PRODUCTION_ALIAS=0` verifies an immutable production build before checking its alias. Preview mode cannot opt into checking the production alias. Contract tests cover stale commits, wrong canonicals, edge indexing mistakes, leaking preview sitemaps, and soft 404s.
 
 A failed CI run leaves the previous successful production site in place. A later successful CI rerun does not automatically retry a failed Cloudflare build; retry it in Pages. Cloudflare's native `Cloudflare Pages` check reports publication separately from CI. Roll back content with a revert commit through the same gate. Emergency Pages rollback remains available; record the manual action and reconcile main afterward.
 
@@ -75,3 +75,7 @@ The temporary release-branch approach was removed: no separate `production` bran
 - [GitHub workflow-run API](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-workflow)
 - [Cloudflare production and preview branch controls](https://developers.cloudflare.com/pages/configuration/branch-build-controls/)
 - [Cloudflare build configuration and environment variables](https://developers.cloudflare.com/pages/configuration/build-configuration/)
+
+## Observed retry recovery
+
+On November 9, the first production build of `9f2f8de53cc1e4c91a0c9e471bc90e269171406d` stopped at an anonymous GitHub API denial/rate limit despite successful push CI. The previous site remained live. Retrying that same deployment through Pages succeeded as `1d237f88-998f-4d72-a55f-8fc9c1d1ca7b`, accepting the exact successful CI run before publication. No credential or unchecked-publication fallback was used. This is an observed availability constraint, not just a theoretical limit.

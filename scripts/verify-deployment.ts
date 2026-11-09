@@ -28,6 +28,9 @@ export async function verifyDeployment({
   assert.match(expectedCommit, /^[a-f0-9]{40}$/u, 'Expected the exact deployed commit SHA.');
   assert.ok(mode === 'production' || mode === 'preview', 'Expected production or preview mode.');
   const isPublic = mode === 'production';
+  // Cloudflare excludes immutable hash URLs even for a public production build.
+  const immutablePagesHost = /^[a-f0-9]{8}\.[^.]+\.pages\.dev$/u.test(new URL(origin).hostname);
+  const edgeNoindex = !isPublic || immutablePagesHost;
   await Promise.all([
     ...pages.map(async (page) => {
       const response = await fetch(`${origin}${page.path}`, {
@@ -48,7 +51,7 @@ export async function verifyDeployment({
         'HTML indexing policy',
       );
       const edgeRobots = response.headers.get('x-robots-tag') ?? '';
-      assert.equal(/\bnoindex\b/iu.test(edgeRobots), !isPublic, 'Edge indexing policy');
+      assert.equal(/\bnoindex\b/iu.test(edgeRobots), edgeNoindex, 'Edge indexing policy');
       assert.ok(html.includes(`mailto:${siteIdentity.email}`), 'Native contact links');
       const csp = response.headers.get('content-security-policy') ?? '';
       assert.ok(

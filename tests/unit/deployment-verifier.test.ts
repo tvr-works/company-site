@@ -36,11 +36,11 @@ function fixture(path: string, mode: Mode): Response {
   return new Response('<meta name="robots" content="noindex, nofollow">', { status: 404 });
 }
 
-function serve(mode: Mode, override?: (path: string) => Response | undefined) {
+function serve(mode: Mode, override?: (path: string) => Response | undefined, origin = deployment) {
   const request = vi.fn<typeof fetch>((input) => {
     if (typeof input !== 'string') throw new Error('Expected URL string.');
     const url = new URL(input);
-    expect(url.origin).toBe(deployment);
+    expect(url.origin).toBe(origin);
     return Promise.resolve(override?.(url.pathname) ?? fixture(url.pathname, mode));
   });
   vi.stubGlobal('fetch', request);
@@ -60,6 +60,23 @@ describe('mode-aware immutable deployment verification', () => {
       expect(request).toHaveBeenCalledTimes(7);
     },
   );
+
+  it('keeps public HTML while requiring edge noindex on immutable production Pages URLs', async () => {
+    const immutable = 'https://1234abcd.company-site-8f1.pages.dev';
+    serve(
+      'production',
+      (path) => {
+        if (!paths.includes(path)) return undefined;
+        const response = fixture(path, 'production');
+        response.headers.set('x-robots-tag', 'noindex');
+        return response;
+      },
+      immutable,
+    );
+    await expect(
+      verifyDeployment({ url: immutable, mode: 'production', expectedCommit: commit }),
+    ).resolves.toBeUndefined();
+  });
 
   it('rejects a healthy deployment serving an older commit', async () => {
     serve('production', (path) =>
