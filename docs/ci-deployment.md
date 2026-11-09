@@ -50,6 +50,10 @@ A failed CI run leaves the previous successful production site in place. A later
 
 The first Blacksmith migration-branch validation on November 9, 2026 took 1 minute 13 seconds, with browser-container initialization taking 17 seconds. A later warm run took 43 seconds. The preceding GitHub-hosted run took 7 minutes 36 seconds, including 6 minutes 26 seconds installing browser dependencies. These are observed samples, not runtime guarantees. [First migration validation](https://github.com/tvr-works/company-site/actions/runs/42633100122).
 
+## Migration record — November 9, 2026
+
+[Main validation](https://github.com/tvr-works/company-site/actions/runs/42640233742) passed before the hosting cutover. A fresh Cloudflare readback confirmed production branch `main` in both project and source configuration, automatic production deployments enabled, all preview branches enabled, and build command `npm run ci:gate && npm run build`. The existing project ID, domains, repository connection, and indexing environments were preserved.
+
 ## References
 
 - [Playwright CI containers](https://playwright.dev/docs/ci)
