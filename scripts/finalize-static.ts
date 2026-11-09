@@ -68,3 +68,11 @@ await writeFile(
 console.log(
   `Verified static HTML; generated ${publicBuild ? 'public' : 'preview'} crawler files and CSP.`,
 );
+
+const commit = process.env.CF_PAGES_COMMIT_SHA ?? process.env.GITHUB_SHA ?? null;
+if (commit !== null && !/^[a-f0-9]{40}$/u.test(commit))
+  throw new Error('Expected a full build commit SHA.');
+await writeFile(
+  new URL('build-info.json', directory),
+  JSON.stringify({ commit, indexing: publicBuild ? 'public' : 'preview' }) + '\n',
+);

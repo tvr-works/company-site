@@ -22,9 +22,11 @@ The Pages project's build command is:
 npm run ci:gate && npm run build
 ```
 
-`scripts/wait-for-ci.ts` reads Cloudflare's `CF_PAGES_COMMIT_SHA` and `CF_PAGES_BRANCH`. It queries this public repository's GitHub Actions API without credentials and accepts only a successful push-triggered run of `ci.yml` matching both the exact SHA and branch. It never substitutes the latest main result, a different branch, or a manually dispatched run.
+`scripts/wait-for-ci.ts` reads Cloudflare's `CF_PAGES_COMMIT_SHA` and `CF_PAGES_BRANCH`. It queries this public repository's GitHub Actions API without credentials and accepts only a successful push-triggered run of `ci.yml` matching both the exact SHA and branch. It never substitutes the latest main result, a different branch, or a manually dispatched run. When more than one matching run is returned, the highest workflow run number and rerun attempt wins; an older success cannot mask a newer failure or active run. Contract tests cover these boundaries, API failures, invalid context, and deadline behavior.
 
-Cloudflare can start a build while CI is running, but the gate must pass before the application build and publication proceed. Failed, canceled, or skipped CI stops publication. Missing context, unreadable GitHub status, rate limiting, invalid responses, and an eight-minute timeout also block publication. Retry the Cloudflare build after resolving the cause or after a successful CI rerun; the gate never falls back to publishing unchecked code.
+Cloudflare can start a build while CI is running, but the gate must pass before the application build and publication proceed. Failed, canceled, or skipped CI stops publication. Missing context, unreadable GitHub status, rate limiting, invalid responses, and a sixteen-minute timeout also block publication. Retry the Cloudflare build after resolving the cause or after a successful CI rerun; the gate never falls back to publishing unchecked code.
+
+The validation job has a twelve-minute execution limit; the gate allows sixteen minutes including CI queue time, leaving headroom for the application build within Pages' twenty-minute build limit. Polling backs off after 15 and 30 seconds to a 60-second interval, with each request capped at fifteen seconds and the remaining deadline. A prolonged queue can still exhaust the gate; retry after CI succeeds.
 
 The API is readable without a token because the repository is public. If repository visibility changes, reassess the integration before changing that assumption. Public API rate limits remain an availability constraint; a rate-limited check fails closed with a diagnostic.
 
@@ -41,10 +43,16 @@ Feature branches must include this workflow and gate script from main; rebase br
 After publication, an operational smoke check is available:
 
 ```sh
-DEPLOYMENT_URL=https://DEPLOYMENT_ID.company-site-8f1.pages.dev node scripts/verify-deployment.ts
+DEPLOYMENT_URL=https://DEPLOYMENT_ID.company-site-8f1.pages.dev \
+EXPECTED_COMMIT_SHA=40_CHARACTER_RELEASE_SHA \
+DEPLOYMENT_MODE=production node scripts/verify-deployment.ts
 ```
 
-The script checks the immutable deployment URL and public domain for page statuses, canonical URLs, indexing, native contact links, security headers, sitemap entries, and a real 404, with three bounded attempts for edge propagation.
+Replace the deployment ID and expected SHA with the intended release. The build writes `build-info.json` from the Cloudflare or GitHub commit context; verification rejects an older healthy deployment. Local builds without commit context use `null` and cannot masquerade as an identified release.
+
+The script checks the immutable deployment URL and public domain for commit identity, page statuses, actual canonical metadata, HTML and edge indexing, native contact links, security headers, robots, exact sitemap entries, and a real non-indexable 404, with three bounded attempts for edge propagation.
+
+Use `DEPLOYMENT_MODE=preview` for previews. That mode checks only the supplied origin, requires HTML and edge `noindex`, blocked robots, an empty sitemap, and preview build identity. Production mode checks the apex by default; `CHECK_PRODUCTION_ALIAS=0` verifies an immutable production build before checking its alias. Preview mode cannot opt into checking the production alias. Contract tests cover stale commits, wrong canonicals, edge indexing mistakes, leaking preview sitemaps, and soft 404s.
 
 A failed CI run leaves the previous successful production site in place. A later successful CI rerun does not automatically retry a failed Cloudflare build; retry it in Pages. Cloudflare's native `Cloudflare Pages` check reports publication separately from CI. Roll back content with a revert commit through the same gate. Emergency Pages rollback remains available; record the manual action and reconcile main afterward.
 

@@ -52,6 +52,13 @@ test(
       /custom applications/i,
     );
     const publicBuild = process.env.VITE_SITE_INDEXING === 'public';
+    const buildInfo = await request.get('/build-info.json');
+    expect(buildInfo.ok()).toBe(true);
+    const identity: unknown = await buildInfo.json();
+    expect(identity).toEqual({
+      commit: process.env.CF_PAGES_COMMIT_SHA ?? process.env.GITHUB_SHA ?? null,
+      indexing: publicBuild ? 'public' : 'preview',
+    });
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       'content',
       publicBuild ? 'index, follow' : 'noindex, follow',
