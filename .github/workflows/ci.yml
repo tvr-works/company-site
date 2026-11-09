@@ -11,12 +11,19 @@ permissions:
 
 concurrency:
   group: site-checks-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancel superseded PR checks, but let an active production release finish.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    container:
+      # Keep the image version and digest aligned with @playwright/test.
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
+      options: --init --ipc=host
     timeout-minutes: 15
+    outputs:
+      site-artifact-id: ${{ steps.site.outputs.artifact-id }}
     env:
       VITE_SITE_ORIGIN: https://tvr.works
       VITE_SITE_INDEXING: preview
@@ -28,13 +35,95 @@ jobs:
         with:
           node-version-file: .node-version
           cache: npm
+      - name: Check browser image compatibility
+        run: >-
+          node --input-type=module -e
+          'import { readFileSync } from "node:fs";
+          import assert from "node:assert/strict";
+          const pkg = JSON.parse(readFileSync("package.json", "utf8"));
+          assert.equal(pkg.devDependencies["@playwright/test"], "1.64.1",
+          "Update the Playwright image tag, digest, and compatibility check together.");'
       - run: npm ci
       - run: npm audit --audit-level=high
       - run: npm run check
-      - run: npx --no-install playwright install --with-deps chromium webkit
-      - run: npm run test:browser
+      - name: Verify preview build
+        run: npm run test:browser
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/preview
       - name: Verify public indexing artifact
         run: npm run test:artifact
         env:
           VITE_SITE_INDEXING: public
           CF_PAGES_BRANCH: main
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/public
+      - name: Save tested production artifact
+        id: site
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: site-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/client/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save browser failure evidence
+        if: failure() && !cancelled()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: browser-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  deploy:
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: https://tvr.works
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+      - name: Download tested production artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          artifact-ids: ${{ needs.validate.outputs.site-artifact-id }}
+          path: site/
+      - name: Reject superseded revisions
+        run: |
+          current_sha="$(git ls-remote origin refs/heads/main | cut -f1)"
+          if [ "$current_sha" != "$GITHUB_SHA" ]; then
+            echo '::error::This revision is no longer main. Run the workflow for the current main commit.'
+            exit 1
+          fi
+      - name: Check deployment credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo '::error::Configure CLOUDFLARE_API_TOKEN in the production environment.'
+            exit 1
+          fi
+      - name: Publish tested artifact
+        id: publish
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 7a1650c6754d3092839902d3791b1b62
+          wranglerVersion: '4.158.0'
+          packageManager: npm
+          command: >-
+            pages deploy site --project-name=company-site --branch=main
+            --commit-hash=${{ github.sha }} --commit-dirty=false
+      - name: Verify published artifact and public domain
+        env:
+          DEPLOYMENT_URL: ${{ steps.publish.outputs.deployment-url }}
+        run: node scripts/verify-deployment.ts
