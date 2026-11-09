@@ -24,7 +24,7 @@ Cloudflare rebuilds the validated source commit using its existing pinned Node v
 
 ## Cutover and recovery
 
-Validate the replacement on Blacksmith before changing Cloudflare's branch controls. Create and verify the production ruleset, including a rejected attempt to promote an unchecked commit. Bootstrap production from a commit whose validation already passed. Then change the existing Pages project's production branch to production and disable automatic previews, preserving its project ID, Git connection, domains, and DNS.
+Validate the replacement on Blacksmith before changing Cloudflare's branch controls. Create and read back the production ruleset, checking its required-check integration, creation policy, force-push protection, deletion protection, and empty bypass list. Bootstrap production from the last successful main-push commit. Then change the existing Pages project's production branch to production and disable automatic previews, preserving its project ID, Git connection, domains, and DNS.
 
 Integrate the workflow on main and verify an automatic promotion, a Cloudflare build of that same commit, and the live site. Cloudflare's native `Cloudflare Pages` check reports publication separately from the GitHub validation/promotion workflow.
 
