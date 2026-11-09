@@ -54,6 +54,12 @@ The first Blacksmith migration-branch validation on November 9, 2026 took 1 minu
 
 [Main validation](https://github.com/tvr-works/company-site/actions/runs/42640233742) passed before the hosting cutover. A fresh Cloudflare readback confirmed production branch `main` in both project and source configuration, automatic production deployments enabled, all preview branches enabled, and build command `npm run ci:gate && npm run build`. The existing project ID, domains, repository connection, and indexing environments were preserved.
 
+The first gated production publication used commit `6dfb69ad59cc214e13cab94bd9468fdebe2e6968` and deployment `743eccd1-d79d-431e-98b8-f451fda3cac3`. Cloudflare logs showed the gate waiting for [push CI](https://github.com/tvr-works/company-site/actions/runs/42640578219), then accepting its success before starting the application build. Validation took 48 seconds. HTTP smoke checks passed against both the immutable deployment URL and `https://tvr.works`.
+
+A disposable preview branch then added an intentionally failing unit test. [Its CI run](https://github.com/tvr-works/company-site/actions/runs/42640622712) failed, and Cloudflare deployment `abc048f7-a7ac-46c6-9a38-c52d005a4657` stopped at the gate with `CI run 42640622712 concluded failure; refusing deployment.` The application build and deployment stage never started. The failing test was removed on that branch and was never merged into main.
+
+The temporary release-branch approach was removed: no separate `production` branch, associated ruleset, GitHub deployment environment, promotion job, or stored Cloudflare credential remains. Cloudflare's existing GitHub App owns publication; Actions owns validation.
+
 ## References
 
 - [Playwright CI containers](https://playwright.dev/docs/ci)
