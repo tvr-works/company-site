@@ -49,7 +49,11 @@ export function SiteFooter() {
     <footer className="site-footer page-width grid grid-cols-1 items-center justify-items-center gap-x-8 gap-y-3 text-center @2xl:grid-cols-2 @2xl:text-left">
       <div className="footer-legal flex min-w-0 flex-wrap items-center justify-center gap-x-2.5 gap-y-1 @2xl:justify-self-start @2xl:justify-start">
         <small>© 2026 {site.legalName}</small>
-        <span className="inline-flex items-center gap-2.5">
+        <span className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 @2xl:justify-start">
+          <span aria-hidden="true" className="hidden @2xl:inline">
+            ·
+          </span>
+          <Link to="/software">Software</Link>
           <span aria-hidden="true">·</span>
           <Link to="/privacy">Privacy</Link>
         </span>

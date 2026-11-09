@@ -149,7 +149,54 @@ test('200% text remains readable and reduced motion is respected', async ({ page
   );
 });
 
-for (const route of ['/', '/privacy', '/missing-page']) {
+test('software is discoverable from the footer and visitors can return to services', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Software', exact: true }).click();
+  await expect(page).toHaveURL(/\/software$/);
+  await expect(page).toHaveTitle('Apps, Libraries & Tools — TVR Works');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+    'Apps, libraries & tools.',
+  );
+  await expect(page.getByRole('list', { name: 'Software from TVR Works' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Explore Key' })).toHaveAttribute(
+    'href',
+    'https://key.tvr.works',
+  );
+  await expect(page.getByText('Coming soon', { exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Coming soon' })).toHaveCount(0);
+  await page.getByRole('link', { name: 'Back to services' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/software$/);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+});
+
+test('software cards remain readable at phone and desktop widths with enlarged text', async ({
+  page,
+}) => {
+  for (const scale of [1, 2]) {
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/software');
+      await page.evaluate((value) => {
+        document.documentElement.style.fontSize = `${value * 100}%`;
+      }, scale);
+      await page.evaluate(() => document.fonts.ready);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        `${width}px at ${scale * 100}% text`,
+      ).toBe(true);
+      await expect(
+        page.getByRole('heading', { name: 'numpy-vector-store', exact: true }),
+      ).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Explore xkcdpass' })).toBeVisible();
+    }
+  }
+});
+
+for (const route of ['/', '/privacy', '/software', '/missing-page']) {
   test(`accessibility scan of ${route}`, async ({ page }) => {
     await page.goto(route);
     const result = await new AxeBuilder({ page })

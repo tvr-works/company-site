@@ -8,10 +8,11 @@ test.use({ timezoneId: 'America/Los_Angeles' });
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('home, privacy, and missing pages have readable static content', async ({ page }) => {
+  test('public pages and missing pages have readable static content', async ({ page }) => {
     for (const [path, heading, status] of [
       ['/', 'Your vision. A partner to build it.', 200],
       ['/privacy', 'Privacy', 200],
+      ['/software', 'Apps, libraries & tools.', 200],
       ['/this-page-does-not-exist', 'Let’s get you back on track.', 404],
     ] as const) {
       const response = await page.goto(path);
@@ -80,6 +81,7 @@ test(
     for (const [path, title] of [
       ['/', 'TVR Works — Custom Software, Applied AI & Technical Leadership'],
       ['/privacy', 'Privacy — TVR Works'],
+      ['/software', 'Apps, Libraries & Tools — TVR Works'],
     ] as const) {
       const html = await (await request.get(path)).text();
       const preview = await page.evaluate((markup) => {
@@ -148,10 +150,12 @@ test(
       expect(sitemap.match(/<loc>[^<]+<\/loc>/g)).toEqual([
         '<loc>https://tvr.works/</loc>',
         '<loc>https://tvr.works/privacy</loc>',
+        '<loc>https://tvr.works/software</loc>',
       ]);
       expect(sitemap.match(/<lastmod>[^<]+<\/lastmod>/g)).toEqual([
         '<lastmod>2026-11-08</lastmod>',
         '<lastmod>2026-11-07</lastmod>',
+        '<lastmod>2026-11-09</lastmod>',
       ]);
     } else expect(sitemap).not.toContain('<url>');
     await page.goto('/privacy');
@@ -161,12 +165,17 @@ test(
     );
     await expect(page.locator('time')).toHaveAttribute('datetime', '2026-11-07');
     await expect(page.locator('time')).toHaveText('November 7, 2026');
+    await page.goto('/software');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      'content',
+      publicBuild ? 'index, follow' : 'noindex, follow',
+    );
     await page.goto('/missing-page');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
   },
 );
 
-for (const path of ['/', '/privacy', '/missing-page']) {
+for (const path of ['/', '/privacy', '/software', '/missing-page']) {
   test(
     `static security headers and contact links survive delivery of ${path}`,
     { tag: '@artifact' },

@@ -533,6 +533,176 @@ h3 {
     margin-top: 2rem;
   }
 }
+.software-page {
+  padding-block: 2.5rem 5rem;
+}
+.software-back {
+  color: var(--muted-foreground);
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+.software-back:hover {
+  color: var(--accent);
+}
+.software-intro {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: end;
+  gap: 3rem;
+  padding-block: 2rem 3.5rem;
+}
+.software-intro h1 {
+  margin: 0;
+  font-size: clamp(3.25rem, 6.8vw, 6.25rem);
+  font-weight: 680;
+  line-height: 1.01;
+  letter-spacing: -0.055em;
+}
+.software-intro > p {
+  max-width: 25rem;
+  margin: 0 0 0.35rem;
+  color: var(--muted-foreground);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.software-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  padding: 2rem 0 0;
+  margin: 0;
+  list-style: none;
+}
+.software-card {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 1.75rem 2rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--border), transparent 25%);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--secondary), transparent 40%),
+    color-mix(in srgb, var(--background), transparent 20%)
+  );
+}
+.software-card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  max-width: 100%;
+}
+.software-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 0.875rem;
+  overflow: hidden;
+  background: var(--secondary);
+}
+.software-card-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.software-card-icon > svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--diagram-caption);
+  stroke-width: 1.5;
+}
+.software-card h2 {
+  margin: 0 0 0.2rem;
+  font-size: 1.875rem;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+}
+.software-platform {
+  margin: 0;
+  color: var(--diagram-caption);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.software-description {
+  color: var(--muted-foreground);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+.software-card > .software-description {
+  max-width: 31rem;
+  margin: 1.25rem 0 0.75rem;
+}
+.software-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  color: var(--accent);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.software-card > .software-link,
+.software-coming-soon {
+  margin-top: auto;
+}
+.software-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.software-link svg {
+  width: 1rem;
+  height: 1rem;
+}
+.software-coming-soon {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 0;
+  color: var(--diagram-caption);
+  font-size: 0.9375rem;
+}
+@container (max-width: 46rem) {
+  .software-page {
+    padding-block: 1.25rem 3rem;
+  }
+  .software-intro {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-block: 1.5rem 2.5rem;
+  }
+  .software-intro h1 {
+    font-size: clamp(2.75rem, 8.5vw, 4rem);
+  }
+  .software-intro > p {
+    max-width: 35rem;
+    font-size: 1.0625rem;
+  }
+  .software-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .software-card {
+    padding: 1.5rem 1.25rem 1rem;
+  }
+  .software-card h2 {
+    font-size: 1.625rem;
+  }
+  .software-card-icon {
+    width: 56px;
+    height: 56px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -20,7 +20,7 @@ npm run build
 npm run preview -- --port 4173 --strictPort
 ```
 
-Open `http://127.0.0.1:4173/`. The preview serves the actual static output, including `/privacy` and a real 404 response for missing URLs. It applies the generated security headers. It does not use a runtime application server or a catch-all homepage fallback.
+Open `http://127.0.0.1:4173/`. The preview serves the actual static output, including `/software`, `/privacy`, and a real 404 response for missing URLs. It applies the generated security headers. It does not use a runtime application server or a catch-all homepage fallback.
 
 ## Checks
 
@@ -58,22 +58,23 @@ The shadcn CLI supplied `src/components/ui/button.tsx`; the two contact sizes be
 
 ## Editing
 
-| Concern                                                   | Source                           |
-| --------------------------------------------------------- | -------------------------------- |
-| Homepage and biography                                    | `src/components/HomePage.tsx`    |
-| Service labels and semantic diagram content               | `src/components/Partnership.tsx` |
-| Shared page shell and focusable main landmark             | `src/components/SiteLayout.tsx`  |
-| Header, footer, and contact controls                      | `src/components/SiteChrome.tsx`  |
-| Identity, page metadata/dates, origin/indexing validation | `src/site-config.ts`             |
-| Runtime page heads and structured data                    | `src/site.ts`                    |
-| Theme, typography, layout, responsive rules               | `src/styles.css`                 |
-| Diagram and atmosphere                                    | `public/assets/*.svg`            |
-| Original brand mark                                       | `public/logo.svg`                |
-| Privacy content                                           | `src/components/PrivacyPage.tsx` |
-| Static artifact/crawler files/security headers            | `scripts/finalize-static.ts`     |
-| Sharing image, search logo, and touch icon                | `scripts/render-social-card.ts`  |
+| Concern                                                   | Source                            |
+| --------------------------------------------------------- | --------------------------------- |
+| Homepage and biography                                    | `src/components/HomePage.tsx`     |
+| Service labels and semantic diagram content               | `src/components/Partnership.tsx`  |
+| Shared page shell and focusable main landmark             | `src/components/SiteLayout.tsx`   |
+| Header, footer, and contact controls                      | `src/components/SiteChrome.tsx`   |
+| Identity, page metadata/dates, origin/indexing validation | `src/site-config.ts`              |
+| Runtime page heads and structured data                    | `src/site.ts`                     |
+| Theme, typography, layout, responsive rules               | `src/styles.css`                  |
+| Diagram and atmosphere                                    | `public/assets/*.svg`             |
+| Original brand mark                                       | `public/logo.svg`                 |
+| Software collection and project links                     | `src/components/SoftwarePage.tsx` |
+| Privacy content                                           | `src/components/PrivacyPage.tsx`  |
+| Static artifact/crawler files/security headers            | `scripts/finalize-static.ts`      |
+| Sharing image, search logo, and touch icon                | `scripts/render-social-card.ts`   |
 
-The diagram’s labels are real HTML in one consistent reading order. Its SVG contains only decorative geometry and is hidden from assistive technology. Font-relative container queries let the diagram reflow into a service list on smaller screens and when visitors enlarge text. Shared LinkedIn and email controls appear in the header and footer; Privacy sits beside the copyright. A container query changes the footer from a centered stack on phones to two columns as space permits. Email links leave subject and body blank. The closing narrative includes Tim's 20 years of experience and is framed by matching subtle rules. Theme and content remain owned by this site; no shared package or monorepo migration has been introduced.
+The diagram’s labels are real HTML in one consistent reading order. Its SVG contains only decorative geometry and is hidden from assistive technology. Font-relative container queries let the diagram reflow into a service list on smaller screens and when visitors enlarge text. Shared LinkedIn and email controls appear in the header and footer; Software and Privacy sit beside the copyright. A container query changes the footer from a centered stack on phones to two columns as space permits. Email links leave subject and body blank. The closing narrative includes Tim's 20 years of experience and is framed by matching subtle rules. Theme and content remain owned by this site; no shared package or monorepo migration has been introduced.
 
 The single self-hosted Geist Latin font is preloaded with the same Vite-generated URL used by CSS and anonymous CORS mode. The local preview disables Vite’s development CORS headers: their `Vary: Origin` behavior caused WebKit to download the preloaded same-origin font twice. Delivery checks verify one font request in both Chromium and WebKit, along with the prerendered organization/person relationships and opaque search-logo dimensions.
 
@@ -83,7 +84,7 @@ The environment-free `site-config.ts` supplies identity and page definitions to 
 
 The public origin is `https://tvr.works`, and the contact is `tim@tvr.works`. Both values are centralized in the site configuration. The former `llc.tvr.works` hostname redirects to the public origin.
 
-Ordinary local builds have `noindex, follow`, a disallowing `robots.txt`, and an empty sitemap. Cloudflare's production environment explicitly sets `VITE_SITE_INDEXING=public`, enabling indexing and the two-page sitemap; preview builds retain `preview`. A non-main Cloudflare branch rejects public indexing. Production mode alone does not enable search indexing.
+Ordinary local builds have `noindex, follow`, a disallowing `robots.txt`, and an empty sitemap. Cloudflare's production environment explicitly sets `VITE_SITE_INDEXING=public`, enabling indexing and the three-page sitemap; preview builds retain `preview`. A non-main Cloudflare branch rejects public indexing. Production mode alone does not enable search indexing.
 
 Pages contain full prerendered HTML and per-route titles, descriptions, canonical URLs, Open Graph/Twitter metadata, and self-hosted sharing artwork. The homepage includes Organization, Person, WebSite, and service-catalog structured data. Each indexable page owns an authored `lastModified` date in `sitePages`. Update only the page whose content changed. Privacy renders its date from that value with an explicit UTC timezone. Dates do not change automatically on every build. No fabricated address, reviews, ratings, availability, or pricing is used.
 
@@ -95,7 +96,7 @@ The site self-hosts Geist Variable and distributes its OFL notice in `public/lic
 
 ## Hosting/privacy boundary
 
-The build prerenders `/`, `/privacy`, and `/404` into `dist/client`. That is the static artifact intended for Cloudflare Pages. The locally generated `dist/server` supports prerendering and is not needed to serve the finished site.
+The build prerenders `/`, `/software`, `/privacy`, and `/404` into `dist/client`. That is the static artifact intended for Cloudflare Pages. The locally generated `dist/server` supports prerendering and is not needed to serve the finished site.
 
 No advertising, visitor-analytics script, third-party embed, contact form, or tracking cookie is added by this source. TanStack Router uses session storage for functional scroll restoration. The preview applies a restrictive CSP with hashes for the generated inline scripts, plus referrer, content-type, and permissions headers.
 

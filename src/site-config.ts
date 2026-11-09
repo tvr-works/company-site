@@ -43,6 +43,15 @@ export const sitePages = {
     lastModified: '2026-11-07',
     indexable: true,
   },
+  software: {
+    path: '/software',
+    outputFile: 'software.html',
+    title: 'Apps, Libraries & Tools — TVR Works',
+    description:
+      'Independent apps, libraries, and utilities built and maintained by TVR Works. Explore Frame, Key, Figure, GolfTally, NumPy Vector Store, and xkcdpass.',
+    lastModified: '2026-11-09',
+    indexable: true,
+  },
   notFound: {
     path: '/404',
     outputFile: '404.html',
