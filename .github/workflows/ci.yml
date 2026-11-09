@@ -11,11 +11,16 @@ permissions:
 
 concurrency:
   group: site-checks-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancel superseded PR checks, but let an active production release finish.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    container:
+      # Keep the image version and digest aligned with @playwright/test.
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
+      options: --init --ipc=host
     timeout-minutes: 15
     env:
       VITE_SITE_ORIGIN: https://tvr.works
@@ -28,13 +33,65 @@ jobs:
         with:
           node-version-file: .node-version
           cache: npm
+      - name: Check browser image compatibility
+        run: >-
+          node --input-type=module -e
+          'import { readFileSync } from "node:fs";
+          import assert from "node:assert/strict";
+          const pkg = JSON.parse(readFileSync("package.json", "utf8"));
+          assert.equal(pkg.devDependencies["@playwright/test"], "1.64.1",
+          "Update the Playwright image tag, digest, and compatibility check together.");'
       - run: npm ci
       - run: npm audit --audit-level=high
       - run: npm run check
-      - run: npx --no-install playwright install --with-deps chromium webkit
-      - run: npm run test:browser
+      - name: Verify preview build
+        run: npm run test:browser
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/preview
       - name: Verify public indexing artifact
         run: npm run test:artifact
         env:
           VITE_SITE_INDEXING: public
-          CF_PAGES_BRANCH: main
+          CF_PAGES_BRANCH: production
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/public
+      - name: Save tested production artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: site-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/client/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save browser failure evidence
+        if: failure() && !cancelled()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: browser-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  promote:
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    environment:
+      name: production
+      url: https://tvr.works
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+      - name: Promote validated main commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/promote-production.ts

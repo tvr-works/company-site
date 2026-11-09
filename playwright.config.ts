@@ -8,7 +8,14 @@ export default defineConfig({
   testMatch: '**/*.spec.ts',
   fullyParallel: true,
   workers: 2,
-  use: { baseURL, reducedMotion: 'reduce', trace: 'retain-on-failure' },
+  forbidOnly: !!process.env.CI,
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
+  use: {
+    baseURL,
+    reducedMotion: 'reduce',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+  },
   projects: [
     {
       name: 'chromium',

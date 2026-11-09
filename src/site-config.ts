@@ -66,7 +66,7 @@ export type SitePage = (typeof sitePages)[keyof typeof sitePages];
 export function resolveSiteIndexing(value: string | undefined, branch?: string): SiteIndexing {
   if (value === undefined || value === '' || value === 'preview') return 'preview';
   if (value !== 'public') throw new Error('VITE_SITE_INDEXING must be preview or public.');
-  if (branch && branch !== 'main')
+  if (branch && branch !== 'production')
     throw new Error('Preview branches cannot enable public indexing.');
   return 'public';
 }

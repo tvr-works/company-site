@@ -8,7 +8,8 @@ describe('public site identity and indexing', () => {
   });
   it('requires explicit public indexing and rejects public preview branches', () => {
     expect(resolveSiteIndexing('public')).toBe('public');
-    expect(resolveSiteIndexing('public', 'main')).toBe('public');
+    expect(resolveSiteIndexing('public', 'production')).toBe('public');
+    expect(() => resolveSiteIndexing('public', 'main')).toThrow('Preview branches');
     expect(() => resolveSiteIndexing('public', 'feature/new-copy')).toThrow('Preview branches');
     expect(() => resolveSiteIndexing('production')).toThrow('preview or public');
   });
