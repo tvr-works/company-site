@@ -44,9 +44,9 @@ const software = [
     platform: 'Python library · Open source',
     description:
       'Lightweight, in-memory vector search powered by NumPy. Bring your own embeddings and keep your stack simple.',
-    href: 'https://github.com/tvanreenen/numpy-vector-store',
+    href: 'https://nvs.tvr.works/',
     icon: Braces,
-    action: 'View source',
+    action: 'Read docs',
   },
   {
     name: 'xkcdpass',

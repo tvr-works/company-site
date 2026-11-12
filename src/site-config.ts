@@ -49,7 +49,7 @@ export const sitePages = {
     title: 'Apps, Libraries & Tools — TVR Works',
     description:
       'Independent apps, libraries, and utilities built and maintained by TVR Works. Explore Frame, Key, Figure, GolfTally, NumPy Vector Store, and xkcdpass.',
-    lastModified: '2026-11-09',
+    lastModified: '2026-11-12',
     indexable: true,
   },
   notFound: {
