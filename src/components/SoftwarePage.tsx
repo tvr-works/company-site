@@ -44,7 +44,7 @@ const software = [
     platform: 'Python library · Open source',
     description:
       'Lightweight, in-memory vector search powered by NumPy. Bring your own embeddings and keep your stack simple.',
-    href: 'https://nvs.tvr.works/',
+    href: 'https://vectors.tvr.works/',
     icon: Braces,
     action: 'Read docs',
   },
