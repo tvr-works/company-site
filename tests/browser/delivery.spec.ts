@@ -162,7 +162,7 @@ test(
       expect(sitemap.match(/<lastmod>[^<]+<\/lastmod>/g)).toEqual([
         '<lastmod>2026-11-08</lastmod>',
         '<lastmod>2026-11-07</lastmod>',
-        '<lastmod>2026-11-09</lastmod>',
+        '<lastmod>2026-11-12</lastmod>',
       ]);
     } else expect(sitemap).not.toContain('<url>');
     await page.goto('/privacy');
