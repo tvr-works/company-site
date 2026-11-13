@@ -9,7 +9,7 @@ const software = [
     image: '/software/frame.png',
     description:
       'A keyboard-first window and workspace manager. Organize your Mac around the way you work.',
-    href: 'https://github.com/tvanreenen/frame',
+    href: 'https://frame.tvr.works',
     action: 'View Frame',
   },
   {
